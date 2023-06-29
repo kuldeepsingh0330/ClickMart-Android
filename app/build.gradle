@@ -63,4 +63,10 @@ dependencies {
 
     implementation 'com.github.hishd:TinyCart:1.0.1'
     implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
+
+    //Image Picker
+    implementation 'com.github.Drjacky:ImagePicker:2.1.16'
+
+    //Circular ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
