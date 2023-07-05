@@ -43,7 +43,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 .load(category.getIcon())
                 .into(holder.binding.image);
 
-        holder.binding.image.setBackgroundColor(Color.parseColor(category.getColor()));
+//        holder.binding.image.setBackgroundColor(Color.parseColor(category.getColor()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

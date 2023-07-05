@@ -87,16 +87,15 @@ public class MainActivity extends AppCompatActivity {
 
     void getCategories() {
         RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://192.168.91.235:8080/categories/";
 
-        StringRequest request = new StringRequest(Request.Method.GET, Constants.GET_CATEGORIES_URL,
+        StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
-            try {
-                Log.e("err", response);
-                JSONObject mainObj = new JSONObject(response);
-                if(mainObj.getString("status").equals("success")) {
-                    JSONArray categoriesArray = mainObj.getJSONArray("categories");
-                    for(int i =0; i< categoriesArray.length(); i++) {
-                        JSONObject object = categoriesArray.getJSONObject(i);
+                Log.e("hhhhhhhhhhh", "try");
+                try{
+                    JSONArray jsonArray = new JSONArray(response);
+                    for(int i =0; i< jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
                         Category category = new Category(
                                 object.getString("name"),
                                 Constants.CATEGORIES_IMAGE_URL + object.getString("icon"),
@@ -105,15 +104,13 @@ public class MainActivity extends AppCompatActivity {
                                 object.getInt("id")
                         );
                         categories.add(category);
+
+                        categoryAdapter.notifyDataSetChanged();
                     }
-                    categoryAdapter.notifyDataSetChanged();
-                } else {
-                    // DO nothing
+                }catch (JSONException e){
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, error -> {
+                }, error -> {
 
         });
 
@@ -124,34 +121,16 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
 
 //        String url = Constants.GET_PRODUCTS_URL + "?count=8";
-        String url = "http://192.168.218.235:8080/product/all";
-        Log.d("hhhhhhhhhhhhhhhh","-----------------------------0");
+        String url = "http://192.168.91.235:8080/product/all";
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            Log.d("hhhhhhhhhhhhhhhh","-----------------------------");
             try {
-                JSONObject object = new JSONObject(response);
-                if(object.getString("status").equals("success")){
-                    JSONArray productsArray = object.getJSONArray("products");
-                    for(int i =0; i< productsArray.length(); i++) {
-                        JSONObject childObj = productsArray.getJSONObject(i);
-                        Product product = new Product(
-                                childObj.getString("name"),
-                                Constants.PRODUCTS_IMAGE_URL + childObj.getString("image"),
-                                childObj.getString("status"),
-                                childObj.getDouble("price"),
-                                childObj.getDouble("price_discount"),
-                                childObj.getInt("stock"),
-                                childObj.getInt("id")
 
-                        );
-                        products.add(product);
-                    }
-                    productAdapter.notifyDataSetChanged();
-                }
-            } catch (JSONException e) {
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, error -> { });
+        }, error -> {
+        });
 
         queue.add(request);
     }

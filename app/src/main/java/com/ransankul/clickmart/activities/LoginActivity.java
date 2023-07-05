@@ -2,10 +2,15 @@ package com.ransankul.clickmart.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,6 +30,7 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
+    Dialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +38,14 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        progressDialog = new Dialog(LoginActivity.this);
+        progressDialog.setContentView(R.layout.please_wait);
+        progressDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        progressDialog.setCancelable(false);
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, android.R.color.transparent)));
+
         binding.buttonLogin.setOnClickListener(view -> {
+            progressDialog.show();
             String userName = binding.editTextUsername.getText().toString();
             String password = binding.editTextPassword.getText().toString();
 
@@ -53,15 +66,17 @@ public class LoginActivity extends AppCompatActivity {
     void createRequest(String username, String password){
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String url = "http://192.168.218.235:8080/validate";
+        String url = "http://192.168.91.235:8080/validate";
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     // Request successful
+                    progressDialog.dismiss();
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                 },
                 error -> {
                     // Request failed
+                    progressDialog.dismiss();
                     if (error.networkResponse != null) {
                         showDialogWithOKButton("Invalid username or password.");
                     } else {
