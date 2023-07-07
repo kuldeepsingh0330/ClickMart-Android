@@ -22,6 +22,14 @@ public class Product implements Item, Serializable {
         this.id = id;
     }
 
+    public Product(String name, String image, double price, double discount, int id) {
+        this.name = name;
+        this.image = image;
+        this.price = price;
+        this.discount = discount;
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

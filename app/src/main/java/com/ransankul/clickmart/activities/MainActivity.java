@@ -1,5 +1,8 @@
 package com.ransankul.clickmart.activities;
 
+import static com.ransankul.clickmart.util.Constants.CATEGORIES_IMAGE_URL;
+import static com.ransankul.clickmart.util.Constants.PRODUCTS_IMAGE_URL;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -87,18 +90,17 @@ public class MainActivity extends AppCompatActivity {
 
     void getCategories() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.91.235:8080/categories/";
+        String url = Constants.GET_CATEGORIES_URL;
 
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
-                Log.e("hhhhhhhhhhh", "try");
                 try{
                     JSONArray jsonArray = new JSONArray(response);
                     for(int i =0; i< jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
                         Category category = new Category(
                                 object.getString("name"),
-                                Constants.CATEGORIES_IMAGE_URL + object.getString("icon"),
+                                CATEGORIES_IMAGE_URL + object.getString("icon"),
                                 object.getString("color"),
                                 object.getString("brief"),
                                 object.getInt("id")
@@ -120,13 +122,23 @@ public class MainActivity extends AppCompatActivity {
     void getRecentProducts() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-//        String url = Constants.GET_PRODUCTS_URL + "?count=8";
-        String url = "http://192.168.91.235:8080/product/all";
+        String url = Constants.GET_PRODUCTS_URL;
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            try {
+            try{
+                JSONArray jsonArray = new JSONArray(response);
+                for(int i =0; i< 2; i++) {
+                    JSONObject object = jsonArray.getJSONObject(i);
+                    Product  product = new Product(object.getString("name"),
+                            PRODUCTS_IMAGE_URL+object.getInt("productId"),
+                            object.getDouble("price"),
+                            object.getDouble("discount"),
+                            object.getInt("productId"));
+                    products.add(product);
 
+                    productAdapter.notifyDataSetChanged();
+                }
+            }catch (JSONException e){
 
-            } catch (Exception e) {
                 e.printStackTrace();
             }
         }, error -> {
@@ -138,20 +150,19 @@ public class MainActivity extends AppCompatActivity {
     void getRecentOffers() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        StringRequest request = new StringRequest(Request.Method.GET, Constants.GET_OFFERS_URL, response -> {
+        String url = Constants.GET_OFFERS_URL;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try {
-                JSONObject object = new JSONObject(response);
-                if(object.getString("status").equals("success")) {
-                    JSONArray offerArray = object.getJSONArray("news_infos");
-                    for(int i =0; i < offerArray.length(); i++) {
-                        JSONObject childObj =  offerArray.getJSONObject(i);
-                        binding.carousel.addData(
-                                new CarouselItem(
-                                        Constants.NEWS_IMAGE_URL + childObj.getString("image"),
-                                        childObj.getString("title")
-                                )
-                        );
-                    }
+                JSONArray array = new JSONArray(response);
+                for(int i =0; i < array.length(); i++) {
+                    JSONObject object =  array.getJSONObject(i);
+                    binding.carousel.addData(
+                            new CarouselItem(
+                                    Constants.OFFER_IMAGE_URL + object.getString("imageName"),
+                                    object.getString("title")
+                            )
+                    );
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

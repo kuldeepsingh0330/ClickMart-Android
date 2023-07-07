@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.ransankul.clickmart.R;
 import com.ransankul.clickmart.databinding.ActivityRegisterBinding;
 import com.ransankul.clickmart.model.User;
+import com.ransankul.clickmart.util.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://192.168.91.235:8080/register";
+        String url = Constants.REGISTER_USER_URL;
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {

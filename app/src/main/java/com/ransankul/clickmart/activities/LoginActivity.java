@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +23,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ransankul.clickmart.R;
 import com.ransankul.clickmart.databinding.ActivityLoginBinding;
+import com.ransankul.clickmart.util.Constants;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,12 +36,22 @@ public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
     Dialog progressDialog;
+    private static final String SHARED_PREFS_NAME = "ransankulClickmart";
+    private static final String KEY_STRING_VALUE = "JWTToken";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        String tok = getTokenValue(getApplicationContext());
+        if(tok != ""){
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity( intent);
+        }
+
+
 
         progressDialog = new Dialog(LoginActivity.this);
         progressDialog.setContentView(R.layout.please_wait);
@@ -66,13 +81,23 @@ public class LoginActivity extends AppCompatActivity {
     void createRequest(String username, String password){
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String url = "http://192.168.91.235:8080/validate";
-        StringRequest request = new StringRequest(Request.Method.POST, url,
+        String url = Constants.VALIDATE_USER_URL;
+        StringRequest  request = new StringRequest (Request.Method.POST, url,
                 response -> {
                     // Request successful
                     progressDialog.dismiss();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
+                    try {
+                        JSONObject object = new JSONObject(response);
+                        String value = object.getString("token");
+                        String msg = object.getString("message");
+                        Log.d("hhhhhhhhh",value+" "+msg);
+                        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                        saveTokenValue(getApplicationContext(),value);
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
                 },
                 error -> {
                     // Request failed
@@ -98,14 +123,24 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showDialogWithOKButton(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        AlertDialog alertDialog = builder.create();
         builder.setMessage(message)
                 .setPositiveButton("OK", (dialog, which) -> {
-                    // Start your intent here
-                    alertDialog.dismiss();
+                    dialog.dismiss();
                 })
                 .setCancelable(false)
-                .create();
-                alertDialog.show();
+                .create()
+                .show();
+    }
+
+    public static void saveTokenValue(Context context, String value) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_STRING_VALUE, value);
+        editor.apply();
+    }
+
+    public static String getTokenValue(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_STRING_VALUE, "");
     }
 }
