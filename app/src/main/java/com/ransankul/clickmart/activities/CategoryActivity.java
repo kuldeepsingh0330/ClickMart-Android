@@ -58,28 +58,26 @@ public class CategoryActivity extends AppCompatActivity {
     void getProducts(int catId) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String url = Constants.GET_PRODUCTS_URL + "?category_id=" + catId;
+        String url = Constants.GET_PRODUCT_BY_CATEGORY_ID_URL + catId;
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try {
-                JSONObject object = new JSONObject(response);
-                if(object.getString("status").equals("success")){
-                    JSONArray productsArray = object.getJSONArray("products");
-                    for(int i =0; i< productsArray.length(); i++) {
-                        JSONObject childObj = productsArray.getJSONObject(i);
-                        Product product = new Product(
-                                childObj.getString("name"),
-                                Constants.PRODUCTS_IMAGE_URL + childObj.getString("image"),
-                                childObj.getString("status"),
-                                childObj.getDouble("price"),
-                                childObj.getDouble("price_discount"),
-                                childObj.getInt("stock"),
-                                childObj.getInt("id")
+                JSONArray array = new JSONArray(response);
+                for(int i =0; i< array.length(); i++) {
+                    JSONObject childObj = array.getJSONObject(i);
+                    Product product = new Product(
+                            childObj.getString("name"),
+                            Constants.PRODUCTS_IMAGE_URL + childObj.getInt("productId"),
+                            childObj.getString("available"),
+                            childObj.getDouble("price"),
+                            childObj.getDouble("discount"),
+                            childObj.getInt("quantity"),
+                            childObj.getInt("productId")
 
-                        );
-                        products.add(product);
-                    }
-                    productAdapter.notifyDataSetChanged();
+                    );
+                    products.add(product);
                 }
+                productAdapter.notifyDataSetChanged();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

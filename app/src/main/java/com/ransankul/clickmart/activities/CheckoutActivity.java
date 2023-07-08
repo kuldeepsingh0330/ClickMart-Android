@@ -1,6 +1,7 @@
 package com.ransankul.clickmart.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -8,8 +9,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,11 +22,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.ransankul.clickmart.R;
+import com.ransankul.clickmart.adapter.AddressAdapter;
 import com.ransankul.clickmart.adapter.CartAdapter;
 import com.ransankul.clickmart.databinding.ActivityCheckoutBinding;
+import com.ransankul.clickmart.databinding.AddEditAddressDialogBinding;
+import com.ransankul.clickmart.model.Address;
 import com.ransankul.clickmart.model.Product;
 import com.ransankul.clickmart.util.Constants;
 import com.hishd.tinycart.model.Cart;
@@ -35,7 +39,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +50,7 @@ public class CheckoutActivity extends AppCompatActivity {
     double totalPrice = 0;
     final int tax = 11;
     ProgressDialog progressDialog;
+    private ArrayList<Address> addressList;
     Cart cart;
 
     @Override
@@ -54,6 +58,7 @@ public class CheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCheckoutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
 
         progressDialog = new ProgressDialog(this);
@@ -75,7 +80,7 @@ public class CheckoutActivity extends AppCompatActivity {
         adapter = new CartAdapter(this, products, new CartAdapter.CartListener() {
             @Override
             public void onQuantityChanged() {
-                binding.subtotal.setText(String.format("PKR %.2f",cart.getTotalPrice()));
+                binding.subtotal.setText(String.format("INR %.2f",cart.getTotalPrice()));
             }
         });
 
@@ -85,10 +90,10 @@ public class CheckoutActivity extends AppCompatActivity {
         binding.cartList.addItemDecoration(itemDecoration);
         binding.cartList.setAdapter(adapter);
 
-        binding.subtotal.setText(String.format("PKR %.2f",cart.getTotalPrice()));
+        binding.subtotal.setText(String.format("INR %.2f",cart.getTotalPrice()));
 
         totalPrice = (cart.getTotalPrice().doubleValue() * tax / 100) + cart.getTotalPrice().doubleValue();
-        binding.total.setText("PKR " + totalPrice);
+        binding.total.setText("INR " + totalPrice);
 
         binding.checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +103,40 @@ public class CheckoutActivity extends AppCompatActivity {
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        addressList = new ArrayList<>();
+
+        Address a = new Address(1,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
+        Address a1 = new Address(2,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
+        Address a2 = new Address(2,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
+        Address a3 = new Address(2,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
+
+        addressList.add(a);
+        addressList.add(a1);
+        addressList.add(a2);
+        addressList.add(a3);
+
+        AddressAdapter adapter = new AddressAdapter(this,addressList);
+        binding.addressRecyclerView.setAdapter(adapter);
+        binding.addressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        binding.addNewAddress.setOnClickListener(view -> {
+            AddEditAddressDialogBinding addressDialogBInding = AddEditAddressDialogBinding.inflate(LayoutInflater.from(this));
+            androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setView(addressDialogBInding.getRoot())
+                    .create();
+
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, android.R.color.white)));
+
+            addressDialogBInding.textView5.setText("ADD ADDRESS");
+            addressDialogBInding.saveAddress.setText("Save Address");
+
+            addressDialogBInding.closeIV.setOnClickListener(view1 -> {
+                dialog.dismiss();
+            });
+
+            dialog.show();
+        });
     }
 
     void processOrder() {
@@ -108,14 +147,14 @@ public class CheckoutActivity extends AppCompatActivity {
         JSONObject dataObject = new JSONObject();
         try {
 
-            productOrder.put("address",binding.addressBox.getText().toString());
-            productOrder.put("buyer",binding.nameBox.getText().toString());
-            productOrder.put("comment", binding.commentBox.getText().toString());
-            productOrder.put("created_at", Calendar.getInstance().getTimeInMillis());
-            productOrder.put("last_update", Calendar.getInstance().getTimeInMillis());
-            productOrder.put("date_ship", Calendar.getInstance().getTimeInMillis());
-            productOrder.put("email", binding.emailBox.getText().toString());
-            productOrder.put("phone", binding.phoneBox.getText().toString());
+//            productOrder.put("address",binding.addressBox.getText().toString());
+//            productOrder.put("buyer",binding.nameBox.getText().toString());
+//            productOrder.put("comment", binding.commentBox.getText().toString());
+//            productOrder.put("created_at", Calendar.getInstance().getTimeInMillis());
+//            productOrder.put("last_update", Calendar.getInstance().getTimeInMillis());
+//            productOrder.put("date_ship", Calendar.getInstance().getTimeInMillis());
+//            productOrder.put("email", binding.emailBox.getText().toString());
+//            productOrder.put("phone", binding.phoneBox.getText().toString());
             productOrder.put("serial", "cab8c1a4e4421a3b");
             productOrder.put("shipping", "");
             productOrder.put("shipping_location", "");
@@ -140,8 +179,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
             dataObject.put("product_order",productOrder);
             dataObject.put("product_order_detail",product_order_detail);
-
-            Log.e("err", dataObject.toString());
 
         } catch (JSONException e) {}
 

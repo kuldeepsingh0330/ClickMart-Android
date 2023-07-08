@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:mt_hint="Search your favorite product"
-            app:mt_placeholder="aExpress"
+            app:mt_placeholder="Search..."
             app:mt_navIconEnabled="true"
             app:mt_maxSuggestionsCount="10"
             app:mt_speechMode="true" />
@@ -56,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     app:showNavigationButtons="false"
-                    app:showCaption="false"
+                    app:showCaption="true"
                     app:autoPlay="true"/>
             </androidx.cardview.widget.CardView>
 

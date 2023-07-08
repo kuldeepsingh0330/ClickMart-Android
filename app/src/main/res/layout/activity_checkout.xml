@@ -69,7 +69,7 @@
                             android:fontFamily="@font/roboto_bold"
                             android:gravity="right"
                             android:padding="10dp"
-                            android:text="PKR 0.0"
+                            android:text="INR 0.0"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -131,7 +131,7 @@
                             android:fontFamily="@font/roboto_bold"
                             android:gravity="right"
                             android:padding="10dp"
-                            android:text="PKR 0.0"
+                            android:text="INR 0.0"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -148,92 +148,51 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
                     <TextView
-                        android:id="@+id/textView5"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
                         android:paddingTop="15dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="15dp"
-                        android:text="Information"
+                        android:layout_weight="1"
+                        android:text="Select Delivery Address"
                         android:textSize="16sp" />
 
+                    <ImageView
+                        android:id="@+id/addNewAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/add_new"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="15dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="15dp"/>
+
+                </LinearLayout>
+
                     <View
-                        android:id="@+id/view2"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/backgroundColor" />
 
-                    <EditText
-                        android:id="@+id/nameBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/edittext_bg"
-                        android:ems="10"
-                        android:hint="Full Name"
-                        android:inputType="textPersonName"
-                        android:padding="15dp" />
 
-                    <EditText
-                        android:id="@+id/emailBox"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/addressRecyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/edittext_bg"
-                        android:ems="10"
-                        android:hint="Email Address"
-                        android:inputType="textPersonName"
-                        android:padding="15dp" />
+                        android:layout_height="match_parent" />
 
-                    <EditText
-                        android:id="@+id/phoneBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/edittext_bg"
-                        android:ems="10"
-                        android:hint="Phone Number"
-                        android:inputType="textPersonName"
-                        android:padding="15dp" />
-
-                    <EditText
-                        android:id="@+id/addressBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/edittext_bg"
-                        android:ems="10"
-                        android:hint="Address"
-                        android:inputType="textPersonName"
-                        android:padding="15dp" />
-
-                    <EditText
-                        android:id="@+id/dateBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/edittext_bg"
-                        android:ems="10"
-                        android:hint="Date Shipping"
-                        android:inputType="textPersonName"
-                        android:padding="15dp" />
-
-                    <EditText
-                        android:id="@+id/commentBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/edittext_bg"
-                        android:ems="10"
-                        android:hint="Additional Comments"
-                        android:inputType="textPersonName"
-                        android:padding="15dp" />
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView

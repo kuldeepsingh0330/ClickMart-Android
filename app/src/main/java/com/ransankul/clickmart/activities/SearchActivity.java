@@ -57,28 +57,26 @@ public class SearchActivity extends AppCompatActivity {
     void getProducts(String query) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String url = Constants.GET_PRODUCTS_URL + "?q=" + query;
+        String url = Constants.SEARCH_PRODUCTS_URL + "?name=" + query;
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try {
-                JSONObject object = new JSONObject(response);
-                if(object.getString("status").equals("success")){
-                    JSONArray productsArray = object.getJSONArray("products");
+                    JSONArray productsArray = new JSONArray(response);
                     for(int i =0; i< productsArray.length(); i++) {
                         JSONObject childObj = productsArray.getJSONObject(i);
                         Product product = new Product(
                                 childObj.getString("name"),
-                                Constants.PRODUCTS_IMAGE_URL + childObj.getString("image"),
-                                childObj.getString("status"),
+                                Constants.PRODUCTS_IMAGE_URL + childObj.getInt("productId"),
+                                childObj.getString("available"),
                                 childObj.getDouble("price"),
-                                childObj.getDouble("price_discount"),
-                                childObj.getInt("stock"),
-                                childObj.getInt("id")
+                                childObj.getDouble("discount"),
+                                childObj.getInt("quantity"),
+                                childObj.getInt("productId")
 
                         );
                         products.add(product);
                     }
                     productAdapter.notifyDataSetChanged();
-                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

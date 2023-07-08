@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,8 +44,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 .load(category.getIcon())
                 .into(holder.binding.image);
 
-//        holder.binding.image.setBackgroundColor(Color.parseColor(category.getColor()));
-
+        try {
+            holder.binding.image.setBackgroundColor(Color.parseColor(category.getColor()));
+        }catch (Exception e){
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

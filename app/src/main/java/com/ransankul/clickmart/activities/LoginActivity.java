@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         if(tok != ""){
             Intent intent = new Intent(this, MainActivity.class);
             startActivity( intent);
+            finish();
         }
 
 
@@ -90,11 +91,11 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject object = new JSONObject(response);
                         String value = object.getString("token");
                         String msg = object.getString("message");
-                        Log.d("hhhhhhhhh",value+" "+msg);
                         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                         saveTokenValue(getApplicationContext(),value);
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
+                        finish();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }

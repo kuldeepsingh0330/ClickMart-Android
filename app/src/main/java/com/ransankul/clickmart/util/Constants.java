@@ -9,8 +9,10 @@ public class Constants {
 
     public static final String GET_CATEGORIES_URL = API_BASE_URL + "/categories/";
     public static final String GET_PRODUCTS_URL = API_BASE_URL + "/product/all";
+    public static final String SEARCH_PRODUCTS_URL = API_BASE_URL + "/product/search";
+    public static final String GET_PRODUCT_BY_CATEGORY_ID_URL = API_BASE_URL + "/product/getProductsByCategory/";
     public static final String GET_OFFERS_URL = API_BASE_URL + "/recentoffer/";
-    public static final String GET_PRODUCT_DETAILS_URL = API_BASE_URL + "/services/getProductDetails?id=";
+    public static final String GET_PRODUCT_DETAILS_URL = API_BASE_URL + "/product/getProductById/";
     public static final String POST_ORDER_URL = API_BASE_URL + "/services/submitProductOrder";
     public static final String  PAYMENT_URL = API_BASE_URL + "/services/paymentPage?code=";
 

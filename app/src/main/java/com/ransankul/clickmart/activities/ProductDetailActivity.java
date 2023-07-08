@@ -25,8 +25,12 @@ import com.ransankul.clickmart.util.Constants;
 import com.hishd.tinycart.model.Cart;
 import com.hishd.tinycart.util.TinyCartHelper;
 
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -45,15 +49,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         int id = getIntent().getIntExtra("id",0);
         double price = getIntent().getDoubleExtra("price",0);
 
-        Glide.with(this)
-                .load(image)
-                .into(binding.productImage);
-
-        getProductDetails(id);
 
         getSupportActionBar().setTitle(name);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getProductDetails(id);
 
         Cart cart = TinyCartHelper.getCart();
 
@@ -66,6 +66,24 @@ public class ProductDetailActivity extends AppCompatActivity {
                 binding.addToCartBtn.setText("Added in cart");
             }
         });
+    }
+
+    private void loadProductImages(JSONObject object) {
+
+        try {
+            JSONArray arr = object.getJSONArray("images");
+            int  id = object.getInt("productId");
+            for(int i = 0;i<arr.length();i++){
+                binding.productImage.addData(
+                        new CarouselItem(
+                                Constants.PRODUCTS_IMAGE_URL + id + "/" +arr.getString(i)
+                        )
+                );
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -91,25 +109,22 @@ public class ProductDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONObject object = new JSONObject(response);
-                    if(object.getString("status").equals("success")) {
-                        JSONObject product = object.getJSONObject("product");
-                        String description = product.getString("description");
-                        binding.productDescription.setText(
-                                Html.fromHtml(description)
-                        );
+                    JSONObject product = new JSONObject(response);
+                    loadProductImages(product);
+                    String description = product.getString("description");
+                    binding.productDescription.setText(
+                            Html.fromHtml(description)
+                    );
 
-                        currentProduct = new Product(
-                                product.getString("name"),
-                                Constants.PRODUCTS_IMAGE_URL + product.getString("image"),
-                                product.getString("status"),
-                                product.getDouble("price"),
-                                product.getDouble("price_discount"),
-                                product.getInt("stock"),
-                                product.getInt("id")
-                        );
-
-                    }
+                    currentProduct = new Product(
+                            product.getString("name"),
+                            Constants.PRODUCTS_IMAGE_URL + product.getString("productId"),
+                            product.getString("available"),
+                            product.getDouble("price"),
+                            product.getDouble("discount"),
+                            product.getInt("quantity"),
+                            product.getInt("productId")
+                    );
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

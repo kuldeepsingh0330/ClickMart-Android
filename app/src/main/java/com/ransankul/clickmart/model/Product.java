@@ -22,6 +22,15 @@ public class Product implements Item, Serializable {
         this.id = id;
     }
 
+    public Product(String name, String status, double price, double discount, int stock, int id) {
+        this.name = name;
+        this.status = status;
+        this.price = price;
+        this.discount = discount;
+        this.stock = stock;
+        this.id = id;
+    }
+
     public Product(String name, String image, double price, double discount, int id) {
         this.name = name;
         this.image = image;
@@ -29,6 +38,7 @@ public class Product implements Item, Serializable {
         this.discount = discount;
         this.id = id;
     }
+
 
     public String getName() {
         return name;

@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         Category category = new Category(
                                 object.getString("name"),
                                 CATEGORIES_IMAGE_URL + object.getString("icon"),
-                                object.getString("color"),
+                                object.getString("color").toLowerCase(),
                                 object.getString("brief"),
                                 object.getInt("id")
                         );
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try{
                 JSONArray jsonArray = new JSONArray(response);
-                for(int i =0; i< 2; i++) {
+                for(int i =0; i<jsonArray.length(); i++) {
                     JSONObject object = jsonArray.getJSONObject(i);
                     Product  product = new Product(object.getString("name"),
                             PRODUCTS_IMAGE_URL+object.getInt("productId"),
