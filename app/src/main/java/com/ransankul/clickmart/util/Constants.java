@@ -19,4 +19,7 @@ public class Constants {
     public static final String OFFER_IMAGE_URL = API_BASE_URL + "/recentoffer/image/";
     public static final String CATEGORIES_IMAGE_URL = API_BASE_URL + "/categories/category_image/";
     public static final String PRODUCTS_IMAGE_URL = API_BASE_URL + "/product/image/";
+    public static final String ADD_NEW_ADDRESS_URL = API_BASE_URL + "/address/";
+    public static final String GET_ALL_ADDRESS_URL = API_BASE_URL + "/address/allAddress/";
+    public static final String UPDATE_ADDRESS_URL = API_BASE_URL + "/address/updateAddress/";
 }

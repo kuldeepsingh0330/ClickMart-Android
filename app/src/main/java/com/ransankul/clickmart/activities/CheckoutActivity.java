@@ -22,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ransankul.clickmart.adapter.AddressAdapter;
 import com.ransankul.clickmart.adapter.CartAdapter;
@@ -46,6 +47,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     ActivityCheckoutBinding binding;
     CartAdapter adapter;
+    AddressAdapter addressAdapter;
     ArrayList<Product> products;
     double totalPrice = 0;
     final int tax = 11;
@@ -66,6 +68,7 @@ public class CheckoutActivity extends AppCompatActivity {
         progressDialog.setMessage("Processing...");
 
         products = new ArrayList<>();
+        addressList = new ArrayList<>();
 
         cart = TinyCartHelper.getCart();
 
@@ -76,6 +79,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
             products.add(product);
         }
+
+        loadAllAddress(1);
 
         adapter = new CartAdapter(this, products, new CartAdapter.CartListener() {
             @Override
@@ -103,21 +108,8 @@ public class CheckoutActivity extends AppCompatActivity {
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        addressList = new ArrayList<>();
-
-        Address a = new Address(1,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
-        Address a1 = new Address(2,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
-        Address a2 = new Address(2,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
-        Address a3 = new Address(2,"Dharampur Road","Dibai","Uttar Pradesh","202393","India");
-
-        addressList.add(a);
-        addressList.add(a1);
-        addressList.add(a2);
-        addressList.add(a3);
-
-        AddressAdapter adapter = new AddressAdapter(this,addressList);
-        binding.addressRecyclerView.setAdapter(adapter);
+        addressAdapter = new AddressAdapter(this,addressList);
+        binding.addressRecyclerView.setAdapter(addressAdapter);
         binding.addressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         binding.addNewAddress.setOnClickListener(view -> {
@@ -131,12 +123,109 @@ public class CheckoutActivity extends AppCompatActivity {
             addressDialogBInding.textView5.setText("ADD ADDRESS");
             addressDialogBInding.saveAddress.setText("Save Address");
 
+            addressDialogBInding.saveAddress.setOnClickListener(view1 -> {
+                String street = addressDialogBInding.streetET.getText().toString().trim();
+                String city = addressDialogBInding.cityET.getText().toString().trim();
+                String state = addressDialogBInding.stateET.getText().toString().trim();
+                String postalCode = addressDialogBInding.postalCodeET.getText().toString().trim();
+                String country = addressDialogBInding.country.getText().toString().trim();
+
+                Address ad = new Address(street,city, state, postalCode, country);
+                Address address = saveAddress(ad);
+                Log.d("hhhhhh", String.valueOf(address.getAddressId()));
+                if (address.getAddressId() != 0){
+                    addressList.add(address);
+                    addressAdapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                }
+
+            });
             addressDialogBInding.closeIV.setOnClickListener(view1 -> {
                 dialog.dismiss();
             });
 
             dialog.show();
         });
+    }
+
+    private void loadAllAddress(int id) {
+        String url = Constants.GET_ALL_ADDRESS_URL+id;
+        StringRequest request = new StringRequest(Request.Method.POST,url,
+                response -> {
+                    try {
+                        JSONObject responseObj = new JSONObject(response);
+                        JSONArray dataArray = responseObj.getJSONArray("data");
+                        for(int i = 0;i<dataArray.length();i++){
+                            JSONObject addressObj = dataArray.getJSONObject(i);
+                            Address ad = new Address(
+                                    Integer.parseInt(addressObj.getString("addressId")),
+                                    addressObj.getString("street"),
+                                    addressObj.getString("city"),
+                                    addressObj.getString("state"),
+                                    addressObj.getString("postalCode"),
+                                    addressObj.getString("country")
+                            );
+                            addressList.add(ad);
+                        }
+                        addressAdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                },error -> {
+
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(request);
+    }
+
+    private Address saveAddress(Address address) {
+
+        String url = Constants.ADD_NEW_ADDRESS_URL;
+
+        JSONObject jsonAddress = new JSONObject();
+        try {
+            jsonAddress.put("street", address.getStreet());
+            jsonAddress.put("city", address.getCity());
+            jsonAddress.put("state", address.getState());
+            jsonAddress.put("postalCode", address.getPostalCode());
+            jsonAddress.put("country", address.getCountry());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonAddress,
+                response -> {
+                    try {
+                        String statusCode = response.getString("statusCode");
+                        JSONObject object = response.getJSONObject("data");
+                        Log.d("hhhhhh",statusCode);
+                        if(statusCode.equals("201")){
+                            Log.d("hhhhhh", "hjffhefh");
+                            address.setAddressId(Integer.parseInt(object.getString("addressId")));
+                            address.setStreet(object.getString("street"));
+                            address.setCity(object.getString("city"));
+                            address.setState(object.getString("state"));
+                            address.setPostalCode(object.getString("postalCode"));
+                            address.setCountry(object.getString("country"));
+                        }else{
+                            address.setAddressId(0);
+                        }
+
+                        Toast.makeText(this, response.getString("msg"), Toast.LENGTH_SHORT).show();
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> {
+                    // Error response
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(request);
+
+        return address;
     }
 
     void processOrder() {

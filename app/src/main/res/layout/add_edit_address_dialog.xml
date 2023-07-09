@@ -91,7 +91,7 @@
                 android:background="@drawable/edittext_bg"
                 android:ems="10"
                 android:hint="Postal Code"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 android:padding="15dp" />
 
             <EditText

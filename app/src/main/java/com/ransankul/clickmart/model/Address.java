@@ -22,6 +22,14 @@ public class Address {
         this.country = country;
     }
 
+    public Address(String street, String city, String state, String postalCode, String country) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.postalCode = postalCode;
+        this.country = country;
+    }
+
     public int getAddressId() {
         return addressId;
     }
