@@ -1,7 +1,7 @@
 package com.ransankul.clickmart.util;
 
 public class Constants {
-    public static final String API_BASE_URL = "http://192.168.91.235:8080";
+    public static final String API_BASE_URL = "http://192.168.245.235:8080";
 
     public static final String REGISTER_USER_URL = API_BASE_URL + "/register";
 
@@ -21,5 +21,5 @@ public class Constants {
     public static final String PRODUCTS_IMAGE_URL = API_BASE_URL + "/product/image/";
     public static final String ADD_NEW_ADDRESS_URL = API_BASE_URL + "/address/";
     public static final String GET_ALL_ADDRESS_URL = API_BASE_URL + "/address/allAddress/";
-    public static final String UPDATE_ADDRESS_URL = API_BASE_URL + "/address/updateAddress/";
+    public static final String UPDATE_ADDRESS_URL = API_BASE_URL + "/address/updateAddress";
 }

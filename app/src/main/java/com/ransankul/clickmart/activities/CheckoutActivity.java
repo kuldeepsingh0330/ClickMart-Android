@@ -34,6 +34,7 @@ import com.ransankul.clickmart.util.Constants;
 import com.hishd.tinycart.model.Cart;
 import com.hishd.tinycart.model.Item;
 import com.hishd.tinycart.util.TinyCartHelper;
+import com.ransankul.clickmart.util.SaveAddressCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -131,13 +133,16 @@ public class CheckoutActivity extends AppCompatActivity {
                 String country = addressDialogBInding.country.getText().toString().trim();
 
                 Address ad = new Address(street,city, state, postalCode, country);
-                Address address = saveAddress(ad);
-                Log.d("hhhhhh", String.valueOf(address.getAddressId()));
-                if (address.getAddressId() != 0){
-                    addressList.add(address);
-                    addressAdapter.notifyDataSetChanged();
-                    dialog.dismiss();
-                }
+                saveAddress(ad, new SaveAddressCallback() {
+                    @Override
+                    public void onSuccess(Address address) {
+                        if (address.getAddressId() != 0){
+                            addressList.add(address);
+                            addressAdapter.notifyDataSetChanged();
+                            dialog.dismiss();
+                        }
+                    }
+                });
 
             });
             addressDialogBInding.closeIV.setOnClickListener(view1 -> {
@@ -179,9 +184,18 @@ public class CheckoutActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-    private Address saveAddress(Address address) {
+    private void saveAddress(Address address, SaveAddressCallback callback) {
 
         String url = Constants.ADD_NEW_ADDRESS_URL;
+
+        if(Objects.equals(address.getStreet(), "") ||
+                Objects.equals(address.getCity(), "") ||
+                Objects.equals(address.getState(), "") ||
+                Objects.equals(address.getPostalCode(), "") ||
+                Objects.equals(address.getCountry(), "")){
+            Toast.makeText(this, "All fields is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         JSONObject jsonAddress = new JSONObject();
         try {
@@ -211,7 +225,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         }else{
                             address.setAddressId(0);
                         }
-
+                        callback.onSuccess(address);
                         Toast.makeText(this, response.getString("msg"), Toast.LENGTH_SHORT).show();
 
                     } catch (JSONException e) {
@@ -224,9 +238,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
-
-        return address;
     }
+
+
 
     void processOrder() {
         progressDialog.show();

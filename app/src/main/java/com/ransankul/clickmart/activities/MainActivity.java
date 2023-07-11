@@ -3,12 +3,15 @@ package com.ransankul.clickmart.activities;
 import static com.ransankul.clickmart.util.Constants.CATEGORIES_IMAGE_URL;
 import static com.ransankul.clickmart.util.Constants.PRODUCTS_IMAGE_URL;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -50,10 +53,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
+
+
+        binding.navigationview.bringToFront();
+
+        binding.navigationButton.setOnClickListener(view -> {
+            if (binding.mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                binding.mainDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+//        binding.searchBar.setOnClickListener(view -> {
+//            binding.navigationButton.setVisibility(View.GONE);
+//        });
+//
+//        if(!binding.searchBar.isSearchOpened())
+//            binding.navigationButton.setVisibility(View.VISIBLE);
+
         binding.searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-
+                binding.navigationButton.setVisibility(View.GONE);
             }
 
             @Override
