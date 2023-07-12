@@ -12,7 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/navigationview"
-        app:menu="@menu/sidemenu"
+        app:menu="@menu/navigation_drawer"
+        app:itemMaxLines="1"
+        app:itemIconPadding="10dp"
+        app:itemIconTint="@color/orange"
+        app:drawerLayoutCornerSize="10dp"
         android:layout_gravity="start"
         />
 

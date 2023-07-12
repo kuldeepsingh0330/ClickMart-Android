@@ -36,8 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
     Dialog progressDialog;
-    private static final String SHARED_PREFS_NAME = "ransankulClickmart";
-    private static final String KEY_STRING_VALUE = "JWTToken";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,14 +132,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public static void saveTokenValue(Context context, String value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_STRING_VALUE, value);
+        editor.putString(Constants.KEY_STRING_VALUE, value);
         editor.apply();
     }
 
     public static String getTokenValue(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_STRING_VALUE, "");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(Constants.KEY_STRING_VALUE, "");
     }
 }

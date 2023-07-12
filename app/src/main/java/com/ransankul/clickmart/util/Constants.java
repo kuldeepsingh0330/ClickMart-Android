@@ -1,6 +1,9 @@
 package com.ransankul.clickmart.util;
 
 public class Constants {
+
+    public static final String SHARED_PREFS_NAME = "ransankulClickmart";
+    public static final String KEY_STRING_VALUE = "JWTToken";
     public static final String API_BASE_URL = "http://192.168.245.235:8080";
 
     public static final String REGISTER_USER_URL = API_BASE_URL + "/register";

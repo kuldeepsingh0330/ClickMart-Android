@@ -3,14 +3,18 @@ package com.ransankul.clickmart.activities;
 import static com.ransankul.clickmart.util.Constants.CATEGORIES_IMAGE_URL;
 import static com.ransankul.clickmart.util.Constants.PRODUCTS_IMAGE_URL;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.navigation.NavigationView;
 import com.ransankul.clickmart.R;
 import com.ransankul.clickmart.adapter.CategoryAdapter;
 import com.ransankul.clickmart.adapter.ProductAdapter;
@@ -65,13 +70,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        binding.searchBar.setOnClickListener(view -> {
-//            binding.navigationButton.setVisibility(View.GONE);
-//        });
-//
-//        if(!binding.searchBar.isSearchOpened())
-//            binding.navigationButton.setVisibility(View.VISIBLE);
-
         binding.searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
@@ -91,9 +89,51 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         initCategories();
         initProducts();
         initSlider();
+
+        binding.navigationview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                int id = item.getItemId();
+                switch(id){
+                    case R.id.wishlist_item:
+                        Intent intent = new Intent(MainActivity.this,WishlistActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.cart_item:
+                        Intent inten = new Intent(MainActivity.this,CartActivity.class);
+                        startActivity(inten);
+                        break;
+                    case R.id.address_item:
+                        Intent inte = new Intent(MainActivity.this,AllAddressActivity.class);
+                        startActivity(inte);
+                        break;
+                    case R.id.orderhistory_item:
+                        Intent in = new Intent(MainActivity.this,OrderHistoryActivity.class);
+                        startActivity(in);
+                        break;
+                    case R.id.logout_item:
+                        logOutUser(MainActivity.this);
+                        break;
+                }
+                binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+    }
+
+    private void logOutUser(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.KEY_STRING_VALUE, "");
+        editor.apply();
+        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        finish();
+        Toast.makeText(this, "Log Out Succesfully", Toast.LENGTH_SHORT).show();
     }
 
     private void initSlider() {

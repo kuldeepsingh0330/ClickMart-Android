@@ -43,6 +43,12 @@ public class CartActivity extends AppCompatActivity {
             products.add(product);
         }
 
+        if(products.isEmpty()){
+            binding.cartList.setVisibility(View.GONE);
+        }else{
+            binding.tvEmpty.setVisibility(View.GONE);
+        }
+
         adapter = new CartAdapter(this, products, new CartAdapter.CartListener() {
             @Override
             public void onQuantityChanged() {
