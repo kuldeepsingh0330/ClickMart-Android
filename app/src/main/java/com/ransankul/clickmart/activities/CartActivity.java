@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.ransankul.clickmart.R;
 import com.ransankul.clickmart.adapter.CartAdapter;
 import com.ransankul.clickmart.databinding.ActivityCartBinding;
 import com.ransankul.clickmart.model.Product;
@@ -43,9 +44,12 @@ public class CartActivity extends AppCompatActivity {
             products.add(product);
         }
 
+
         if(products.isEmpty()){
+            binding.continueBtn.setEnabled(false);
             binding.cartList.setVisibility(View.GONE);
         }else{
+            binding.continueBtn.setEnabled(true);
             binding.tvEmpty.setVisibility(View.GONE);
         }
 
@@ -54,6 +58,16 @@ public class CartActivity extends AppCompatActivity {
             public void onQuantityChanged() {
                 binding.subtotal.setText(String.format("INR %.2f",cart.getTotalPrice()));
             }
+
+            @Override
+            public void onProductRemove() {
+                if(products.isEmpty()){
+                    binding.tvEmpty.setVisibility(View.VISIBLE);
+                    binding.continueBtn.setEnabled(false);
+                }
+            }
+
+
         });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);

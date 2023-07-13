@@ -88,13 +88,13 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         JSONObject object = new JSONObject(response);
                         String value = object.getString("token");
-                        String msg = object.getString("message");
+                        String msg = object.getString("msg");
                         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                         saveTokenValue(getApplicationContext(),value);
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 },

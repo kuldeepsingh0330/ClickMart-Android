@@ -31,6 +31,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     public interface CartListener {
         public void onQuantityChanged();
+        public void onProductRemove();
     }
 
 
@@ -55,7 +56,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 .into(holder.binding.image);
 
         holder.binding.name.setText(product.getName());
-        holder.binding.price.setText("PKR " + product.getPrice());
+        holder.binding.price.setText("INR " + product.getPrice());
         holder.binding.quantity.setText(product.getQuantity() + " item(s)");
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +100,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     @Override
                     public void onClick(View view) {
                         int quantity = product.getQuantity();
-                        if(quantity > 1)
+                        if(quantity == 1){
+                            products.remove(product);
+                            dialog.dismiss();
+                            cartListener.onProductRemove();
+                            notifyDataSetChanged();
+                            Toast.makeText(context, "Product removed from cart", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(quantity > 1)
                             quantity--;
                         product.setQuantity(quantity);
                         quantityDialogBinding.quantity.setText(String.valueOf(quantity));
@@ -114,9 +122,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     @Override
                     public void onClick(View view) {
                         dialog.dismiss();
-//                        notifyDataSetChanged();
-//                        cart.updateItem(product, product.getQuantity());
-//                        cartListener.onQuantityChanged();
+                        notifyDataSetChanged();
+                        cart.updateItem(product, product.getQuantity());
+                        cartListener.onQuantityChanged();
                     }
                 });
 

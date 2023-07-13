@@ -57,7 +57,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         Cart cart = TinyCartHelper.getCart();
 
-
         binding.addToCartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

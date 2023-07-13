@@ -47,10 +47,6 @@
             android:exported="false"
             android:theme="@style/Theme.ClickMart.Actionbar" />
         <activity
-            android:name=".activities.PaymentActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ClickMart.Actionbar" />
-        <activity
             android:name=".activities.CheckoutActivity"
             android:exported="false"
             android:theme="@style/Theme.ClickMart.Actionbar" />

@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.ransankul.clickmart.R;
+import com.ransankul.clickmart.activities.CheckoutActivity;
 import com.ransankul.clickmart.databinding.AddEditAddressDialogBinding;
 import com.ransankul.clickmart.databinding.ItemAddressBinding;
 import com.ransankul.clickmart.databinding.ItemCartBinding;
@@ -68,6 +69,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         holder.binding.checkBoxAddress.setOnClickListener(view -> {
 
             boolean isChecked = holder.binding.checkBoxAddress.isChecked();
+            CheckoutActivity.address = address;
 
             if(!isSelected){
                 if(isChecked) isSelected = true;
