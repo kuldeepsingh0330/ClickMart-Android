@@ -6,15 +6,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -31,6 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -65,6 +70,45 @@ public class ProductDetailActivity extends AppCompatActivity {
                 binding.addToCartBtn.setText("Added in cart");
             }
         });
+
+        binding.addToWishlist.setOnClickListener(view -> {
+            addToWishlist(id,Constants.getTokenValue(ProductDetailActivity.this));
+        });
+    }
+
+    private void addToWishlist(int id, String tokenValue) {
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        // Create the JSONObject
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("productId", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = Constants.POST_ADD_TO_WISHLIST_URL;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                response -> {
+                    // Handle the response
+                    binding.addToWishlist.setEnabled(false);
+                    binding.addToWishlist.setText("Added in wishlist");
+                },
+                error -> {
+                    // Handle the error
+                    Toast.makeText(ProductDetailActivity.this, "Something went Wrong", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void loadProductImages(JSONObject object) {

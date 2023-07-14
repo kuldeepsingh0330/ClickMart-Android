@@ -1,11 +1,14 @@
 package com.ransankul.clickmart.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public class Constants {
 
     public static final String SHARED_PREFS_NAME = "ransankulClickmart";
     public static final String KEY_STRING_VALUE = "JWTToken";
     public static final String RAZORPAY_KEY_ID = "rzp_test_E09iJEUuEwhiqc";
-    public static final String API_BASE_URL = "http://192.168.255.235:8080";
+    public static final String API_BASE_URL = "http://192.168.190.235:8080";
 
     public static final String REGISTER_USER_URL = API_BASE_URL + "/register";
 
@@ -26,4 +29,10 @@ public class Constants {
     public static final String ADD_NEW_ADDRESS_URL = API_BASE_URL + "/address/";
     public static final String GET_ALL_ADDRESS_URL = API_BASE_URL + "/address/allAddress/";
     public static final String UPDATE_ADDRESS_URL = API_BASE_URL + "/address/updateAddress";
+    public static final String POST_ADD_TO_WISHLIST_URL = API_BASE_URL + "/product/wishlist/add";
+
+    public static String getTokenValue(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(Constants.KEY_STRING_VALUE, "");
+    }
 }
