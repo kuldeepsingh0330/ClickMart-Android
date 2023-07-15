@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -29,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class AllAddressActivity extends AppCompatActivity {
@@ -44,7 +47,7 @@ public class AllAddressActivity extends AppCompatActivity {
 
 
         addressList = new ArrayList<>();
-        loadAllAddress(1);
+        loadAllAddress();
 
         if(addressList.isEmpty()){
             binding.addressRecyclerView.setVisibility(View.GONE);
@@ -103,8 +106,9 @@ public class AllAddressActivity extends AppCompatActivity {
 
     }
 
-    private void loadAllAddress(int id) {
-        String url = Constants.GET_ALL_ADDRESS_URL+id;
+    private void loadAllAddress() {
+        String tokenValue = Constants.getTokenValue(AllAddressActivity.this);
+        String url = Constants.GET_ALL_ADDRESS_URL;
         StringRequest request = new StringRequest(Request.Method.POST,url,
                 response -> {
                     try {
@@ -129,12 +133,22 @@ public class AllAddressActivity extends AppCompatActivity {
 
                 },error -> {
 
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
     }
 
     private void saveAddress(Address address, SaveAddressCallback callback) {
+
+
+        String tokenValue = Constants.getTokenValue(AllAddressActivity.this);
 
         String url = Constants.ADD_NEW_ADDRESS_URL;
 
@@ -179,12 +193,22 @@ public class AllAddressActivity extends AppCompatActivity {
                         Toast.makeText(this, response.getString("msg"), Toast.LENGTH_SHORT).show();
 
                     } catch (JSONException e) {
+                        Log.d("hhhhhh",e.toString());
                         throw new RuntimeException(e);
                     }
                 },
                 error -> {
+
+                    Log.d("hhhhhh",error.toString());
                     // Error response
-                });
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);

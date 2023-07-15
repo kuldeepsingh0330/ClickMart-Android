@@ -52,7 +52,18 @@
         android:text="Add to WishList"
         android:layout_weight="1"
         android:layout_width="50dp"
+        android:visibility="gone"
         android:layout_marginRight="5dp"/>
+
+        <Button
+            android:id="@+id/removeToWishlist"
+            android:layout_height="wrap_content"
+            android:background="@color/orange"
+            android:text="Remove WishList"
+            android:layout_weight="1"
+            android:layout_width="50dp"
+            android:visibility="gone"
+            android:layout_marginRight="5dp"/>
 
         <Button
             android:id="@+id/addToCartBtn"
@@ -60,6 +71,17 @@
             android:background="@color/orange"
             android:text="Add to Cart"
             android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_marginLeft="5dp"
+            android:layout_width="50dp"/>
+
+        <Button
+            android:id="@+id/removeToCartBtn"
+            android:layout_height="wrap_content"
+            android:background="@color/orange"
+            android:text="Remove to Cart"
+            android:layout_weight="1"
+            android:visibility="gone"
             android:layout_marginLeft="5dp"
             android:layout_width="50dp"/>
 

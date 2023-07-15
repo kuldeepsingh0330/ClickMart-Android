@@ -100,14 +100,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     @Override
                     public void onClick(View view) {
                         int quantity = product.getQuantity();
-                        if(quantity == 1){
-                            products.remove(product);
-                            dialog.dismiss();
-                            cartListener.onProductRemove();
-                            notifyDataSetChanged();
-                            Toast.makeText(context, "Product removed from cart", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(quantity > 1)
+                        if(quantity > 1)
                             quantity--;
                         product.setQuantity(quantity);
                         quantityDialogBinding.quantity.setText(String.valueOf(quantity));

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -30,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
@@ -156,6 +159,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
         String url = Constants.UPDATE_ADDRESS_URL;
 
+        String tokenValue = Constants.getTokenValue(context);
+
 
         if(Objects.equals(address.getStreet(), "") ||
                 Objects.equals(address.getCity(), "") ||
@@ -197,7 +202,14 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
                 },
                 error -> {
                     // Error response
-                });
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        };
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(request);

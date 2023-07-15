@@ -20,22 +20,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
+import com.hishd.tinycart.model.Cart;
+import com.hishd.tinycart.model.Item;
+import com.hishd.tinycart.util.TinyCartHelper;
 import com.ransankul.clickmart.R;
 import com.ransankul.clickmart.databinding.ActivityProductDetailBinding;
 import com.ransankul.clickmart.model.Product;
 import com.ransankul.clickmart.util.Constants;
-import com.hishd.tinycart.model.Cart;
-import com.hishd.tinycart.util.TinyCartHelper;
 
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -43,37 +44,79 @@ public class ProductDetailActivity extends AppCompatActivity {
     ActivityProductDetailBinding binding;
     Product currentProduct;
 
+    Cart cart;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityProductDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        cart = TinyCartHelper.getCart();
+
         String name = getIntent().getStringExtra("name");
-        String image = getIntent().getStringExtra("image");
         int id = getIntent().getIntExtra("id",0);
-        double price = getIntent().getDoubleExtra("price",0);
 
 
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getProductDetails(id);
+        initializeLayout(id);
+        isProductintoWishList(id);
 
-        Cart cart = TinyCartHelper.getCart();
+
 
         binding.addToCartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cart.addItem(currentProduct,1);
-                binding.addToCartBtn.setEnabled(false);
-                binding.addToCartBtn.setText("Added in cart");
+                binding.addToCartBtn.setVisibility(View.GONE);
+                binding.removeToCartBtn.setVisibility(View.VISIBLE);
+            }
+        });
+
+        binding.removeToCartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Set<Item> set = cart.getItemNames();
+
+                for(Item i : set){
+                    if(i.getItemName() == String.valueOf(id)){
+                        cart.removeItem(i);
+                        binding.addToCartBtn.setVisibility(View.VISIBLE);
+                        binding.removeToCartBtn.setVisibility(View.GONE);
+                    }
+                }
             }
         });
 
         binding.addToWishlist.setOnClickListener(view -> {
             addToWishlist(id,Constants.getTokenValue(ProductDetailActivity.this));
         });
+
+        binding.removeToWishlist.setOnClickListener(view -> {
+            removeToWishList(id);
+        });
+    }
+
+    private void initializeLayout(int id) {
+        boolean b = false;
+        Set<Item> set = cart.getItemNames();
+
+        for(Item i : set){
+            if(i.getItemName() == String.valueOf(id)){b = true;break;}
+            else b = false;
+        }
+
+        if(b){
+            binding.addToCartBtn.setVisibility(View.GONE);
+            binding.removeToCartBtn.setVisibility(View.VISIBLE);
+        }else{
+            binding.removeToCartBtn.setVisibility(View.GONE);
+            binding.addToCartBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     private void addToWishlist(int id, String tokenValue) {
@@ -92,8 +135,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {
                     // Handle the response
-                    binding.addToWishlist.setEnabled(false);
-                    binding.addToWishlist.setText("Added in wishlist");
+                    binding.addToWishlist.setVisibility(View.GONE);
+                    binding.removeToWishlist.setVisibility(View.VISIBLE);
                 },
                 error -> {
                     // Handle the error
@@ -103,6 +146,83 @@ public class ProductDetailActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
+    private void isProductintoWishList(int id){
+        String token = Constants.getTokenValue(ProductDetailActivity.this);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        String url = Constants.POST_PRODUCT_EXIST_TO_WISHLIST_URL+"/"+id;
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    // Handle the response
+                    try {
+                        JSONObject object = new JSONObject(response);
+                        if(object.getString("statusCode").equals("201")){
+                            binding.addToWishlist.setVisibility(View.GONE);
+                            binding.removeToWishlist.setVisibility(View.VISIBLE);
+                        }else{
+                            binding.addToWishlist.setVisibility(View.VISIBLE);
+                            binding.removeToWishlist.setVisibility(View.GONE);
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> {
+                    Toast.makeText(ProductDetailActivity.this, "Something went Wrong", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void removeToWishList(int id){
+        String token = Constants.getTokenValue(ProductDetailActivity.this);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        String url = Constants.POST_REMOVE_TO_WISHLIST_URL+"/"+id;
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    // Handle the response
+                    try {
+                        JSONObject object = new JSONObject(response);
+                        if(object.getString("statusCode").equals("202")){
+                            binding.addToWishlist.setVisibility(View.VISIBLE);
+                            binding.removeToWishlist.setVisibility(View.GONE);
+                            Toast.makeText(this, object.getString("msg"), Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(this, object.getString("msg"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                error -> {
+                    // Handle the error
+                    Log.e("hhhhhh",error.toString());
+                    Toast.makeText(ProductDetailActivity.this, "Something went Wrong", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
                 return headers;
             }
         };

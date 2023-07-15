@@ -94,7 +94,7 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
             products.add(product);
         }
 
-        loadAllAddress(1);
+        loadAllAddress();
 
         adapter = new CartAdapter(this, products, new CartAdapter.CartListener() {
             @Override
@@ -173,8 +173,10 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
         });
     }
 
-    private void loadAllAddress(int id) {
-        String url = Constants.GET_ALL_ADDRESS_URL+id;
+    private void loadAllAddress() {
+
+        String tokenValue = Constants.getTokenValue(CheckoutActivity.this);
+        String url = Constants.GET_ALL_ADDRESS_URL;
         StringRequest request = new StringRequest(Request.Method.POST,url,
                 response -> {
                     try {
@@ -199,7 +201,14 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
 
                 },error -> {
 
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
     }
@@ -207,6 +216,8 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
     private void saveAddress(Address address, SaveAddressCallback callback) {
 
         String url = Constants.ADD_NEW_ADDRESS_URL;
+
+        String tokenValue = Constants.getTokenValue(CheckoutActivity.this);
 
         if(Objects.equals(address.getStreet(), "") ||
                 Objects.equals(address.getCity(), "") ||
@@ -254,7 +265,14 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
                 },
                 error -> {
                     // Error response
-                });
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
@@ -265,6 +283,8 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
     void processOrder() {
         progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
+
+        String tokenValue = Constants.getTokenValue(CheckoutActivity.this);
 
         JSONObject dataObject = new JSONObject();
         try {
@@ -295,6 +315,7 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Security","secure_code");
+                headers.put("Authorization", "Bearer " + tokenValue);
                 return headers;
             }
         } ;

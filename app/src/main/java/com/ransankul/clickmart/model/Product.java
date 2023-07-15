@@ -22,21 +22,30 @@ public class Product implements Item, Serializable {
         this.id = id;
     }
 
-    public Product(String name, String status, double price, double discount, int stock, int id) {
-        this.name = name;
-        this.status = status;
-        this.price = price;
-        this.discount = discount;
-        this.stock = stock;
-        this.id = id;
-    }
-
     public Product(String name, String image, double price, double discount, int id) {
         this.name = name;
         this.image = image;
         this.price = price;
         this.discount = discount;
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", status='" + status + '\'' +
+                ", price=" + price +
+                ", discount=" + discount +
+                ", stock=" + stock +
+                ", id=" + id +
+                ", quantity=" + quantity +
+                '}';
+    }
+
+    public Product() {
+
     }
 
 
@@ -103,7 +112,7 @@ public class Product implements Item, Serializable {
 
     @Override
     public String getItemName() {
-        return name;
+        return String.valueOf(id);
     }
 
     public int getQuantity() {
