@@ -41,7 +41,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     ArrayList<Address> addressList;
 
     private int expandedPosition = RecyclerView.NO_POSITION;
-    private boolean isSelected = false;
+    public boolean isSelected = false;
 
     public AddressAdapter(Context context, ArrayList<Address> addressList) {
         this.context = context;

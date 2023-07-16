@@ -49,13 +49,6 @@ public class AllAddressActivity extends AppCompatActivity {
         addressList = new ArrayList<>();
         loadAllAddress();
 
-        if(addressList.isEmpty()){
-            binding.addressRecyclerView.setVisibility(View.GONE);
-        }else{
-            binding.tvEmpty.setVisibility(View.GONE);
-        }
-
-
         getSupportActionBar().setTitle("Saved Addresses");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -127,11 +120,13 @@ public class AllAddressActivity extends AppCompatActivity {
                             addressList.add(ad);
                         }
                         addressAdapter.notifyDataSetChanged();
+                        initLayout();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
 
                 },error -> {
+            Log.e("hhhhhhh",error.toString());
 
         }) {
             @Override
@@ -146,8 +141,6 @@ public class AllAddressActivity extends AppCompatActivity {
     }
 
     private void saveAddress(Address address, SaveAddressCallback callback) {
-
-
         String tokenValue = Constants.getTokenValue(AllAddressActivity.this);
 
         String url = Constants.ADD_NEW_ADDRESS_URL;
@@ -177,9 +170,7 @@ public class AllAddressActivity extends AppCompatActivity {
                     try {
                         String statusCode = response.getString("statusCode");
                         JSONObject object = response.getJSONObject("data");
-                        Log.d("hhhhhh",statusCode);
                         if(statusCode.equals("201")){
-                            Log.d("hhhhhh", "hjffhefh");
                             address.setAddressId(Integer.parseInt(object.getString("addressId")));
                             address.setStreet(object.getString("street"));
                             address.setCity(object.getString("city"));
@@ -191,15 +182,13 @@ public class AllAddressActivity extends AppCompatActivity {
                         }
                         callback.onSuccess(address);
                         Toast.makeText(this, response.getString("msg"), Toast.LENGTH_SHORT).show();
+                        initLayout();
 
                     } catch (JSONException e) {
-                        Log.d("hhhhhh",e.toString());
                         throw new RuntimeException(e);
                     }
                 },
                 error -> {
-
-                    Log.d("hhhhhh",error.toString());
                     // Error response
                 }) {
             @Override
@@ -212,6 +201,14 @@ public class AllAddressActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(request);
+    }
+
+    private void initLayout(){
+        if(addressList.isEmpty()){
+            binding.addressRecyclerView.setVisibility(View.GONE);
+        }else{
+            binding.tvEmpty.setVisibility(View.GONE);
+        }
     }
 
     @Override

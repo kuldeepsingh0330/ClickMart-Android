@@ -86,4 +86,16 @@ public class Address {
         this.user = user;
     }
 
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressId=" + addressId +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", country='" + country + '\'' +
+                ", user=" + user +
+                '}';
+    }
 }

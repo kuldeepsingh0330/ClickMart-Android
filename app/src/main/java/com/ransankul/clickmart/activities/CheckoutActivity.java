@@ -5,10 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,14 +39,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
-import com.razorpay.PaymentResultListener;
 import com.razorpay.PaymentResultWithDataListener;
 
 public class CheckoutActivity extends AppCompatActivity implements PaymentResultWithDataListener {
@@ -124,8 +119,11 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
         binding.checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("hhhhh",address.getStreet().toString());
-                processOrder();
+                if(addressAdapter.isSelected) {
+                    processOrder();
+                }
+                else
+                    Toast.makeText(CheckoutActivity.this, "Please select delivery address", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -286,12 +284,39 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
 
         String tokenValue = Constants.getTokenValue(CheckoutActivity.this);
 
+        Map<Item,Integer> productList = cart.getAllItemsWithQty();
+        JSONArray product = new JSONArray();
+        JSONArray quantity = new JSONArray();
+        for(Map.Entry<Item, Integer> entry : productList.entrySet()){
+            Item key = entry.getKey();
+            int value = entry.getValue();
+
+            int id = Integer.parseInt(key.getItemName());
+            product.put(id);
+            quantity.put(value);
+        }
+
+        JSONObject jsonAddress = new JSONObject();
+        try {
+            jsonAddress.put("street", address.getStreet());
+            jsonAddress.put("city", address.getCity());
+            jsonAddress.put("state", address.getState());
+            jsonAddress.put("postalCode", address.getPostalCode());
+            jsonAddress.put("country", address.getCountry());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         JSONObject dataObject = new JSONObject();
         try {
-            dataObject.put("amount",totalPrice);
+            dataObject.put("productList",product);
+            dataObject.put("quantityList",quantity);
+            dataObject.put("deliveryAddress",jsonAddress);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        Log.e("hhhhhh",dataObject.toString());
 
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.POST_CREATE_ORDER_URL, dataObject, new Response.Listener<JSONObject>() {

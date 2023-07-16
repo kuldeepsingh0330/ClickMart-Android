@@ -19,14 +19,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/AllAddressActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/AllAddressActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/CheckoutActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/CheckoutActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/ProductDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/ProductDetailActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/WishlistActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/WishlistActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/adapter/AddressAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/adapter/AddressAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/adapter/CartAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/adapter/CartAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/model/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/model/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/model/Address.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/util/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/util/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_product_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_product_detail.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_wishlist.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_wishlist.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
