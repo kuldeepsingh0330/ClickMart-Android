@@ -17,10 +17,9 @@
       <change beforePath="$PROJECT_DIR$/.gradle/7.5/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.5/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/AllAddressActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/AllAddressActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/CheckoutActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/CheckoutActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/adapter/AddressAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/adapter/AddressAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/model/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/model/Address.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/WishlistActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/activities/WishlistActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/util/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/ransankul/clickmart/util/Constants.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -28,7 +27,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[f35291c8]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -40,8 +39,8 @@
         <option value="CMakeLists.txt" />
         <option value="Interface" />
         <option value="resourceFile" />
-        <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>

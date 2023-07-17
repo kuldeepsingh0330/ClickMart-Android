@@ -40,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -73,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
         binding.searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
-                binding.navigationButton.setVisibility(View.GONE);
+                if(enabled) binding.navigationButton.setVisibility(View.GONE);
+                else binding.navigationButton.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -89,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+         List<String> sugg = binding.searchBar.getLastSuggestions();
+         binding.searchBar.setLastSuggestions(sugg);
+         binding.searchBar.setMaxSuggestionCount(5);
 
         initCategories();
         initProducts();

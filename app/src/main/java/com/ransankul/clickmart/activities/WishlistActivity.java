@@ -134,7 +134,6 @@ public class WishlistActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-
     @Override
     protected void onRestart() {
         super.onRestart();

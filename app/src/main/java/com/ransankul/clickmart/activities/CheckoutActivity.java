@@ -59,6 +59,8 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
     private ArrayList<Address> addressList;
     Cart cart;
 
+    private String orderId;
+
     public static Address address;
 
 
@@ -242,9 +244,7 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
                     try {
                         String statusCode = response.getString("statusCode");
                         JSONObject object = response.getJSONObject("data");
-                        Log.d("hhhhhh",statusCode);
                         if(statusCode.equals("201")){
-                            Log.d("hhhhhh", "hjffhefh");
                             address.setAddressId(Integer.parseInt(object.getString("addressId")));
                             address.setStreet(object.getString("street"));
                             address.setCity(object.getString("city"));
@@ -298,6 +298,7 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
 
         JSONObject jsonAddress = new JSONObject();
         try {
+            jsonAddress.put("addressId",address.getAddressId());
             jsonAddress.put("street", address.getStreet());
             jsonAddress.put("city", address.getCity());
             jsonAddress.put("state", address.getState());
@@ -316,7 +317,6 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
             throw new RuntimeException(e);
         }
 
-        Log.e("hhhhhh",dataObject.toString());
 
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.POST_CREATE_ORDER_URL, dataObject, new Response.Listener<JSONObject>() {
@@ -324,6 +324,7 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
             public void onResponse(JSONObject response) {
                 try {
                     if (response.getString("status").equals("created")){
+                        orderId = response.getString("id");
                         startPayment(response);
                     }
                 } catch (JSONException e) {
@@ -387,12 +388,79 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
     @Override
     public void onPaymentSuccess(String s, PaymentData paymentData) {
 
+
+        String tokenValue = Constants.getTokenValue(CheckoutActivity.this);
+        JSONObject obj = paymentData.getData();
+        try {
+            obj.put("status","paid");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.POST_UPDATE_ORDER_URL,obj,
+                response -> {
+            String st ;
+                    try {
+                        st = response.getString("statusCode");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if(st.equals("200")){
+                Toast.makeText(this, "Payment successful", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "something went wrong please contact to customer care", Toast.LENGTH_SHORT).show();
+            }
+        }, error -> {
+            Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show();
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Security","secure_code");
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        } ;
+
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+        progressDialog.dismiss();
     }
 
     @Override
     public void onPaymentError(int i, String s, PaymentData paymentData) {
-        progressDialog.dismiss();
-        Toast.makeText(this, "Payment unsuccessful", Toast.LENGTH_SHORT).show();
 
+
+        String tokenValue = Constants.getTokenValue(CheckoutActivity.this);
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("razorpay_order_id",orderId);
+            obj.put("status","failed");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.POST_UPDATE_ORDER_URL,obj,
+                response -> {
+                    Toast.makeText(this, "Payment failed", Toast.LENGTH_SHORT).show();
+
+                }, error -> {
+
+            Toast.makeText(this, "something went wrong", Toast.LENGTH_SHORT).show();}
+
+                ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Security","secure_code");
+                headers.put("Authorization", "Bearer " + tokenValue);
+                return headers;
+            }
+        } ;
+
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+        progressDialog.dismiss();
     }
 }

@@ -21,7 +21,7 @@ public class Constants {
     public static final String GET_OFFERS_URL = API_BASE_URL + "/recentoffer/";
     public static final String GET_PRODUCT_DETAILS_URL = API_BASE_URL + "/product/getProductById/";
     public static final String POST_CREATE_ORDER_URL = API_BASE_URL + "/payment/create-order";
-    public static final String  PAYMENT_URL = API_BASE_URL + "/services/paymentPage?code=";
+    public static final String POST_UPDATE_ORDER_URL = API_BASE_URL + "/payment/verify-payment";
 
     public static final String OFFER_IMAGE_URL = API_BASE_URL + "/recentoffer/image/";
     public static final String CATEGORIES_IMAGE_URL = API_BASE_URL + "/categories/category_image/";
