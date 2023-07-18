@@ -5,10 +5,12 @@ import static com.ransankul.clickmart.util.Constants.PRODUCTS_IMAGE_URL;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -132,13 +134,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logOutUser(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constants.KEY_STRING_VALUE, "");
-        editor.apply();
-        startActivity(new Intent(MainActivity.this,LoginActivity.class));
-        finish();
-        Toast.makeText(this, "Log Out Succesfully", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Log Out");
+        builder.setMessage("Are you sure to LOG OUT")
+                .setPositiveButton("LOG OUT", (dialog, which) -> {
+                    SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Constants.KEY_STRING_VALUE, "");
+                    editor.apply();
+                    startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                    finish();
+                    Toast.makeText(this, "Log Out Succesfully", Toast.LENGTH_SHORT).show();
+                }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .setCancelable(true)
+                .create()
+                .show();
     }
 
     private void initSlider() {

@@ -12,6 +12,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ransankul.clickmart.R;
 import com.ransankul.clickmart.adapter.AddressAdapter;
+import com.ransankul.clickmart.adapter.AllAddressAdapter;
 import com.ransankul.clickmart.databinding.ActivityAllAddressBinding;
 import com.ransankul.clickmart.databinding.AddEditAddressDialogBinding;
 import com.ransankul.clickmart.model.Address;
@@ -37,7 +38,7 @@ import java.util.Objects;
 public class AllAddressActivity extends AppCompatActivity {
 
     private ArrayList<Address> addressList;
-    AddressAdapter addressAdapter;
+    AllAddressAdapter addressAdapter;
     ActivityAllAddressBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class AllAddressActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Saved Addresses");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addressAdapter = new AddressAdapter(this,addressList);
+        addressAdapter = new AllAddressAdapter(this,addressList);
         binding.addressRecyclerView.setAdapter(addressAdapter);
         binding.addressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 

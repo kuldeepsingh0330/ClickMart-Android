@@ -33,6 +33,8 @@ public class Constants {
     public static final String POST_REMOVE_TO_WISHLIST_URL = API_BASE_URL + "/product/wishlist/remove";
     public static final String POST_LOAD_ALL_TO_WISHLIST_URL = API_BASE_URL + "/product/wishlist/all";
     public static final String POST_PRODUCT_EXIST_TO_WISHLIST_URL = API_BASE_URL + "/product/wishlist/isExist";
+    public static final String DELETE_ADDRESS_URL = API_BASE_URL+"/address/";
+    public static final String POST_LOAD_ALL_TRANSACTION_URL = API_BASE_URL+"/payment/";
 
     public static String getTokenValue(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);

@@ -274,10 +274,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 try {
                     JSONObject product = new JSONObject(response);
                     loadProductImages(product);
-                    String description = product.getString("description");
-                    binding.productDescription.setText(
-                            Html.fromHtml(description)
-                    );
 
                     currentProduct = new Product(
                             product.getString("name"),
@@ -288,6 +284,17 @@ public class ProductDetailActivity extends AppCompatActivity {
                             product.getInt("quantity"),
                             product.getInt("productId")
                     );
+
+
+                    String description = product.getString("description");
+                    binding.productDescription.setText(
+                            Html.fromHtml(description)
+                    );
+                    binding.totalPrice.setText("Price : "+product.getString("price"));
+                    binding.discount.setText("Discount : "+product.getString("discount"));
+                    binding.finalPrice.setText("Final Price : "+String.valueOf(product.getDouble("price")-product.getDouble("discount")));
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
