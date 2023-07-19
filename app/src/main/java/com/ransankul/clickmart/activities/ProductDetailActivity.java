@@ -290,10 +290,14 @@ public class ProductDetailActivity extends AppCompatActivity {
                     binding.productDescription.setText(
                             Html.fromHtml(description)
                     );
+
                     binding.totalPrice.setText("Price : "+product.getString("price"));
                     binding.discount.setText("Discount : "+product.getString("discount"));
                     binding.finalPrice.setText("Final Price : "+String.valueOf(product.getDouble("price")-product.getDouble("discount")));
 
+                    binding.linearLayout2.setVisibility(View.VISIBLE);
+                    binding.linearLayout4.setVisibility(View.VISIBLE);
+                    binding.ll5.setVisibility(View.VISIBLE);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

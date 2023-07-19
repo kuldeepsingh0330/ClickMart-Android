@@ -9,8 +9,9 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -42,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/productImage">
@@ -82,6 +84,7 @@
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
@@ -112,8 +115,10 @@
                 app:layout_constraintTop_toBottomOf="@id/linearLayout4" />
 
             <LinearLayout
+                android:id="@+id/ll5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/view3"
                 app:layout_constraintStart_toStartOf="@+id/view3"
                 app:layout_constraintTop_toBottomOf="@+id/view3">
@@ -139,50 +144,50 @@
         android:id="@+id/buttonLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#DD895F"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/addToWishlist"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@color/orange"
             android:text="Add to WishList"
-            android:layout_weight="1"
-            android:layout_width="50dp"
-            android:visibility="gone"
-            android:layout_marginRight="5dp"/>
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/removeToWishlist"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@color/orange"
             android:text="Remove WishList"
-            android:layout_weight="1"
-            android:layout_width="50dp"
-            android:visibility="gone"
-            android:layout_marginRight="5dp"/>
+            android:visibility="gone"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray"/>
 
         <Button
             android:id="@+id/addToCartBtn"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@color/orange"
             android:text="Add to Cart"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:layout_marginLeft="5dp"
-            android:layout_width="50dp"/>
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/removeToCartBtn"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@color/orange"
             android:text="Remove to Cart"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:layout_marginLeft="5dp"
-            android:layout_width="50dp"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -20,11 +20,14 @@
         android:layout_gravity="start"
         />
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/conlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout
+        <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +66,7 @@
             app:mt_hint="Search your favorite product"
             app:mt_maxSuggestionsCount="10"
             app:mt_navIconEnabled="false"
-            app:mt_placeholder="Search..."
+            app:mt_placeholder="ClickMart"
             app:mt_speechMode="true" />
 
         </LinearLayout>
@@ -72,57 +75,68 @@
 
     </LinearLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-        <LinearLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_height="0dp"
+            android:id="@+id/refreshMainA"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/conlay"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout">
 
-            <androidx.cardview.widget.CardView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp">
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:fillViewport="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-                <org.imaginativeworld.whynotimagecarousel.ImageCarousel
-                    android:id="@+id/carousel"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:showNavigationButtons="false"
-                    app:showCaption="true"
-                    app:autoPlay="true"/>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:cardCornerRadius="10dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categoriesList"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp" />
-            </androidx.cardview.widget.CardView>
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="10dp">
+
+                        <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+                            android:id="@+id/carousel"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            app:autoPlay="true"
+                            app:showCaption="true"
+                            app:showNavigationButtons="false" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:cardCornerRadius="10dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/categoriesList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/productList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp" />
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

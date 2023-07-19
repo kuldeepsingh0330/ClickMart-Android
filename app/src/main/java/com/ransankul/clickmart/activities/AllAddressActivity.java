@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -76,14 +77,11 @@ public class AllAddressActivity extends AppCompatActivity {
                 String country = addressDialogBInding.country.getText().toString().trim();
 
                 Address ad = new Address(street,city, state, postalCode, country);
-                saveAddress(ad, new SaveAddressCallback() {
-                    @Override
-                    public void onSuccess(Address address) {
-                        if (address.getAddressId() != 0){
-                            addressList.add(address);
-                            addressAdapter.notifyDataSetChanged();
-                            dialog.dismiss();
-                        }
+                saveAddress(ad, address -> {
+                    if (address.getAddressId() != 0){
+                        addressList.add(address);
+                        addressAdapter.notifyDataSetChanged();
+                        dialog.dismiss();
                     }
                 });
 
@@ -95,9 +93,11 @@ public class AllAddressActivity extends AppCompatActivity {
             dialog.show();
         });
 
-
-
-
+        binding.refreshAddressList.setOnRefreshListener(() -> {
+            addressList.clear();
+            addressAdapter.notifyDataSetChanged();
+            loadAllAddress();
+        });
     }
 
     private void loadAllAddress() {
@@ -125,9 +125,11 @@ public class AllAddressActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                    binding.refreshAddressList.setRefreshing(false);
 
                 },error -> {
             Log.e("hhhhhhh",error.toString());
+            binding.refreshAddressList.setRefreshing(false);
 
         }) {
             @Override

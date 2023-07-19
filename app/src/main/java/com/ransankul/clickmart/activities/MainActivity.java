@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -98,39 +99,62 @@ public class MainActivity extends AppCompatActivity {
          binding.searchBar.setMaxSuggestionCount(5);
 
         initCategories();
-        initProducts();
+        GridLayoutManager layoutManager = initProducts();
         initSlider();
 
-        binding.navigationview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        binding.navigationview.setNavigationItemSelectedListener(item -> {
 
-                int id = item.getItemId();
-                switch(id){
-                    case R.id.wishlist_item:
-                        Intent intent = new Intent(MainActivity.this,WishlistActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.cart_item:
-                        Intent inten = new Intent(MainActivity.this,CartActivity.class);
-                        startActivity(inten);
-                        break;
-                    case R.id.address_item:
-                        Intent inte = new Intent(MainActivity.this,AllAddressActivity.class);
-                        startActivity(inte);
-                        break;
-                    case R.id.orderhistory_item:
-                        Intent in = new Intent(MainActivity.this,OrderHistoryActivity.class);
-                        startActivity(in);
-                        break;
-                    case R.id.logout_item:
-                        logOutUser(MainActivity.this);
-                        break;
+            int id = item.getItemId();
+            switch(id){
+                case R.id.wishlist_item:
+                    Intent intent = new Intent(MainActivity.this,WishlistActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.cart_item:
+                    Intent inten = new Intent(MainActivity.this,CartActivity.class);
+                    startActivity(inten);
+                    break;
+                case R.id.address_item:
+                    Intent inte = new Intent(MainActivity.this,AllAddressActivity.class);
+                    startActivity(inte);
+                    break;
+                case R.id.orderhistory_item:
+                    Intent in = new Intent(MainActivity.this,OrderHistoryActivity.class);
+                    startActivity(in);
+                    break;
+                case R.id.logout_item:
+                    logOutUser(MainActivity.this);
+                    break;
+            }
+            binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+
+        binding.refreshMainA.setOnRefreshListener(() -> {
+
+            categories.clear();
+            products.clear();
+            productAdapter.notifyDataSetChanged();
+            categoryAdapter.notifyDataSetChanged();
+            initCategories();
+            initProducts();
+        });
+
+        binding.productList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+
                 }
-                binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
-                return true;
             }
         });
+
     }
 
     private void logOutUser(Context context) {
@@ -221,7 +245,9 @@ public class MainActivity extends AppCompatActivity {
 
                 e.printStackTrace();
             }
+            binding.refreshMainA.setRefreshing(false);
         }, error -> {
+            binding.refreshMainA.setRefreshing(false);
         });
 
         queue.add(request);
@@ -251,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    void initProducts() {
+    GridLayoutManager initProducts() {
         products = new ArrayList<>();
         productAdapter = new ProductAdapter(this, products);
 
@@ -260,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         binding.productList.setLayoutManager(layoutManager);
         binding.productList.setAdapter(productAdapter);
+        return layoutManager;
     }
 
 }

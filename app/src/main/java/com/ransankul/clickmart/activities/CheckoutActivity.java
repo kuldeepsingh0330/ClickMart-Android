@@ -53,14 +53,11 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
     CartAdapter adapter;
     AddressAdapter addressAdapter;
     ArrayList<Product> products;
-    double totalPrice = 0;
-    final int tax = 11;
+    double discount = 0;
     ProgressDialog progressDialog;
     private ArrayList<Address> addressList;
     Cart cart;
-
     private String orderId;
-
     public static Address address;
 
 
@@ -82,12 +79,11 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
         addressList = new ArrayList<>();
 
         cart = TinyCartHelper.getCart();
-
         for(Map.Entry<Item, Integer> item : cart.getAllItemsWithQty().entrySet()) {
             Product product = (Product) item.getKey();
             int quantity = item.getValue();
+            discount = discount+product.getDiscount();
             product.setQuantity(quantity);
-
             products.add(product);
         }
 
@@ -95,14 +91,16 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
 
         adapter = new CartAdapter(this, products, new CartAdapter.CartListener() {
             @Override
-            public void onQuantityChanged() {
-                binding.subtotal.setText(String.format("INR %.2f",cart.getTotalPrice()));
+            public void onQuantityincrease(Product pro) {
+                discount = discount+pro.getDiscount();
+                setPrices();
             }
 
             @Override
-            public void onProductRemove() {
+            public void onQuantitydecrease(Product pro) {
                 if(products.isEmpty()){
-                    binding.checkoutBtn.setEnabled(false);
+                    discount = discount-pro.getDiscount();
+                    setPrices();
                 }
             }
         });
@@ -113,10 +111,7 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
         binding.cartList.addItemDecoration(itemDecoration);
         binding.cartList.setAdapter(adapter);
 
-        binding.subtotal.setText(String.format("INR %.2f",cart.getTotalPrice()));
-
-        totalPrice = (cart.getTotalPrice().doubleValue() * tax / 100) + cart.getTotalPrice().doubleValue();
-        binding.total.setText("INR " + totalPrice);
+        setPrices();
 
         binding.checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +166,13 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
 
             dialog.show();
         });
+    }
+
+    private void setPrices() {
+        binding.total.setText(String.format("INR %.2f",cart.getTotalPrice()));
+        binding.discount.setText(String.format("INR %.2f",discount));
+        double finalprice = Double.valueOf(String.valueOf(cart.getTotalPrice()))-discount;
+        binding.finalPrice.setText(String.format("INR %.2f",finalprice));
     }
 
     private void loadAllAddress() {
@@ -370,7 +372,7 @@ public class CheckoutActivity extends AppCompatActivity implements PaymentResult
             options.put("order_id", response.getString("id"));//from response of step 3.
             options.put("theme.color", "#FF5722");
             options.put("currency", "INR");
-            options.put("amount", totalPrice);//pass amount in currency subunits
+            options.put("amount",response.getString("amount"));//pass amount in currency subunits
             options.put("prefill.contact","7417371265");
             options.put("prefill.email", "");
             JSONObject retryObj = new JSONObject();

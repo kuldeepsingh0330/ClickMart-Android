@@ -46,6 +46,12 @@ public class SearchActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         binding.productList.setLayoutManager(layoutManager);
         binding.productList.setAdapter(productAdapter);
+
+        binding.refreshSearchList.setOnRefreshListener(() -> {
+            products.clear();
+            productAdapter.notifyDataSetChanged();
+            getProducts(query);
+        });
     }
 
     @Override
@@ -80,7 +86,8 @@ public class SearchActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> { });
+            binding.refreshSearchList.setRefreshing(false);
+        }, error -> {binding.refreshSearchList.setRefreshing(false); });
 
         queue.add(request);
     }

@@ -4,6 +4,7 @@ import static com.ransankul.clickmart.util.Constants.PRODUCTS_IMAGE_URL;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -56,6 +57,13 @@ public class WishlistActivity extends AppCompatActivity {
         progressDialog.setMessage("Please wait...");
 
         initProducts();
+
+        binding.refreshWishlist.setOnRefreshListener(() -> {
+            products.clear();
+            productAdapter.notifyDataSetChanged();
+            progressDialog.show();
+            initProducts();
+        });
     }
 
     private void getAllWishlistProduct() {
@@ -98,9 +106,11 @@ public class WishlistActivity extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
                     progressDialog.dismiss();
+                    binding.refreshWishlist.setRefreshing(false);
                 },
                 error -> {
                     progressDialog.dismiss();
+                    binding.refreshWishlist.setRefreshing(false);
                 }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {

@@ -55,12 +55,12 @@ public class CartActivity extends AppCompatActivity {
 
         adapter = new CartAdapter(this, products, new CartAdapter.CartListener() {
             @Override
-            public void onQuantityChanged() {
+            public void onQuantityincrease(Product pro) {
                 binding.subtotal.setText(String.format("INR %.2f",cart.getTotalPrice()));
             }
 
             @Override
-            public void onProductRemove() {
+            public void onQuantitydecrease(Product pro) {
                 if(products.isEmpty()){
                     binding.tvEmpty.setVisibility(View.VISIBLE);
                     binding.continueBtn.setEnabled(false);

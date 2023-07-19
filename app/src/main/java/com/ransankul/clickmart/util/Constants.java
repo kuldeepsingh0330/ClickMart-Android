@@ -8,7 +8,7 @@ public class Constants {
     public static final String SHARED_PREFS_NAME = "ransankulClickmart";
     public static final String KEY_STRING_VALUE = "JWTToken";
     public static final String RAZORPAY_KEY_ID = "rzp_test_E09iJEUuEwhiqc";
-    public static final String API_BASE_URL = "http://192.168.222.235:8080";
+    public static final String API_BASE_URL = "http://192.168.36.235:8080";
 
     public static final String REGISTER_USER_URL = API_BASE_URL + "/register";
 

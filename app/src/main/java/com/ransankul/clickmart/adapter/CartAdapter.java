@@ -30,8 +30,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     Cart cart;
 
     public interface CartListener {
-        public void onQuantityChanged();
-        public void onProductRemove();
+        public void onQuantityincrease(Product pro);
+        public void onQuantitydecrease(Product pro);
     }
 
 
@@ -92,7 +92,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
                         notifyDataSetChanged();
                         cart.updateItem(product, product.getQuantity());
-                        cartListener.onQuantityChanged();
+                        cartListener.onQuantityincrease(product);
                     }
                 });
 
@@ -107,7 +107,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
                         notifyDataSetChanged();
                         cart.updateItem(product, product.getQuantity());
-                        cartListener.onQuantityChanged();
+                        cartListener.onQuantitydecrease(product);
                     }
                 });
 
@@ -115,9 +115,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                     @Override
                     public void onClick(View view) {
                         dialog.dismiss();
-                        notifyDataSetChanged();
-                        cart.updateItem(product, product.getQuantity());
-                        cartListener.onQuantityChanged();
                     }
                 });
 

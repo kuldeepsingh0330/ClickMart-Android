@@ -33,7 +33,6 @@ import java.util.Map;
 public class OrderHistoryActivity extends AppCompatActivity {
 
     ActivityOrderHistoryBinding binding;
-
     ArrayList<OrderHistory> transactionList;
     OrderHistoryAdapter orderHistoryAdapter;
 
@@ -54,6 +53,12 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         loadAllTransaction();
         initLayout();
+
+        binding.refreshOrderlist.setOnRefreshListener(() -> {
+            transactionList.clear();
+            orderHistoryAdapter.notifyDataSetChanged();
+            loadAllTransaction();
+        });
     }
 
     private void loadAllTransaction() {
@@ -81,9 +86,11 @@ public class OrderHistoryActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-
+                    binding.refreshOrderlist.setRefreshing(false);
                 },error -> {
             Log.e("hhhhhhh",error.toString());
+            initLayout();
+            binding.refreshOrderlist.setRefreshing(false);
 
         }) {
             @Override
