@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     ProductAdapter productAdapter;
     ArrayList<Product> products;
+    int pageNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
             categories.clear();
             products.clear();
+            pageNumber = 0;
             productAdapter.notifyDataSetChanged();
             categoryAdapter.notifyDataSetChanged();
             initCategories();
@@ -150,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
                 if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
-
+                    pageNumber++;
+                    getRecentProducts();
                 }
             }
         });
@@ -226,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
     void getRecentProducts() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String url = Constants.GET_PRODUCTS_URL;
+        String url = Constants.GET_PRODUCTS_URL+pageNumber;
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try{
                 JSONArray jsonArray = new JSONArray(response);

@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -43,13 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        String tok = getTokenValue(getApplicationContext());
-        if(tok != ""){
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity( intent);
-            finish();
-        }
-
 
 
         progressDialog = new Dialog(LoginActivity.this);
@@ -60,8 +54,8 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.buttonLogin.setOnClickListener(view -> {
             progressDialog.show();
-            String userName = binding.editTextUsername.getText().toString();
-            String password = binding.editTextPassword.getText().toString();
+            String userName = binding.editTextUsername.getText().toString().trim();
+            String password = binding.editTextPassword.getText().toString().trim();
 
             createRequest(userName,password);
 
@@ -80,13 +74,20 @@ public class LoginActivity extends AppCompatActivity {
     void createRequest(String username, String password){
         RequestQueue queue = Volley.newRequestQueue(this);
 
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("username",username);
+            jsonObject.put("password",password);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
         String url = Constants.VALIDATE_USER_URL;
-        StringRequest  request = new StringRequest (Request.Method.POST, url,
-                response -> {
+        JsonObjectRequest  request = new JsonObjectRequest(Request.Method.POST, url,jsonObject,
+                object -> {
                     // Request successful
                     progressDialog.dismiss();
                     try {
-                        JSONObject object = new JSONObject(response);
                         String value = object.getString("token");
                         String msg = object.getString("msg");
                         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -106,19 +107,13 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         showDialogWithOKButton("An error occurred. Please try again.");
                     }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("password", password);
-                return params;
-            }
-        };
-
+                });
         queue.add(request);
 
     }
+
+
+
 
     private void showDialogWithOKButton(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -138,8 +133,5 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    public static String getTokenValue(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(Constants.KEY_STRING_VALUE, "");
-    }
+
 }

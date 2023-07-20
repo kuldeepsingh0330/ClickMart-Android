@@ -1,7 +1,9 @@
 package com.ransankul.clickmart.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -36,6 +38,8 @@ public class OrderHistoryActivity extends AppCompatActivity {
     ArrayList<OrderHistory> transactionList;
     OrderHistoryAdapter orderHistoryAdapter;
 
+    int pageNumber = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +53,8 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         orderHistoryAdapter = new OrderHistoryAdapter(this,transactionList);
         binding.productList.setAdapter(orderHistoryAdapter);
-        binding.productList.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.productList.setLayoutManager(layoutManager);
 
         loadAllTransaction();
         initLayout();
@@ -57,13 +62,30 @@ public class OrderHistoryActivity extends AppCompatActivity {
         binding.refreshOrderlist.setOnRefreshListener(() -> {
             transactionList.clear();
             orderHistoryAdapter.notifyDataSetChanged();
+            pageNumber = 0;
             loadAllTransaction();
+        });
+
+        binding.productList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    pageNumber++;
+                    loadAllTransaction();
+                }
+            }
         });
     }
 
     private void loadAllTransaction() {
         String tokenValue = Constants.getTokenValue(OrderHistoryActivity.this);
-        String url = Constants.POST_LOAD_ALL_TRANSACTION_URL;
+        String url = Constants.POST_LOAD_ALL_TRANSACTION_URL+pageNumber;
         StringRequest request = new StringRequest(Request.Method.POST,url,
                 response -> {
                     try {

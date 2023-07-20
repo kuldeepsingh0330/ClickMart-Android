@@ -1,7 +1,9 @@
 package com.ransankul.clickmart.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
@@ -26,6 +28,7 @@ public class SearchActivity extends AppCompatActivity {
     ActivitySearchBinding binding;
     ProductAdapter productAdapter;
     ArrayList<Product> products;
+    int pageNumber = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +53,24 @@ public class SearchActivity extends AppCompatActivity {
         binding.refreshSearchList.setOnRefreshListener(() -> {
             products.clear();
             productAdapter.notifyDataSetChanged();
+            pageNumber = 0;
             getProducts(query);
+        });
+
+        binding.productList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    pageNumber++;
+                    getProducts(query);
+                }
+            }
         });
     }
 
@@ -63,7 +83,7 @@ public class SearchActivity extends AppCompatActivity {
     void getProducts(String query) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String url = Constants.SEARCH_PRODUCTS_URL + "?name=" + query;
+        String url = Constants.SEARCH_PRODUCTS_URL+pageNumber + "?name=" + query;
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try {
                     JSONArray productsArray = new JSONArray(response);

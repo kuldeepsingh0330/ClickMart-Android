@@ -1,8 +1,10 @@
 package com.ransankul.clickmart.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -41,6 +43,8 @@ public class AllAddressActivity extends AppCompatActivity {
     private ArrayList<Address> addressList;
     AllAddressAdapter addressAdapter;
     ActivityAllAddressBinding binding;
+
+    int pageNumber = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +60,8 @@ public class AllAddressActivity extends AppCompatActivity {
 
         addressAdapter = new AllAddressAdapter(this,addressList);
         binding.addressRecyclerView.setAdapter(addressAdapter);
-        binding.addressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.addressRecyclerView.setLayoutManager(layoutManager);
 
         binding.addNewAddress.setOnClickListener(view -> {
             AddEditAddressDialogBinding addressDialogBInding = AddEditAddressDialogBinding.inflate(LayoutInflater.from(this));
@@ -96,32 +101,51 @@ public class AllAddressActivity extends AppCompatActivity {
         binding.refreshAddressList.setOnRefreshListener(() -> {
             addressList.clear();
             addressAdapter.notifyDataSetChanged();
+            pageNumber = 0;
             loadAllAddress();
+        });
+
+        binding.addressRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    pageNumber++;
+                    loadAllAddress();
+                }
+            }
         });
     }
 
     private void loadAllAddress() {
         String tokenValue = Constants.getTokenValue(AllAddressActivity.this);
-        String url = Constants.GET_ALL_ADDRESS_URL;
+        String url = Constants.GET_ALL_ADDRESS_URL+pageNumber;
         StringRequest request = new StringRequest(Request.Method.POST,url,
                 response -> {
                     try {
                         JSONObject responseObj = new JSONObject(response);
-                        JSONArray dataArray = responseObj.getJSONArray("data");
-                        for(int i = 0;i<dataArray.length();i++){
-                            JSONObject addressObj = dataArray.getJSONObject(i);
-                            Address ad = new Address(
-                                    Integer.parseInt(addressObj.getString("addressId")),
-                                    addressObj.getString("street"),
-                                    addressObj.getString("city"),
-                                    addressObj.getString("state"),
-                                    addressObj.getString("postalCode"),
-                                    addressObj.getString("country")
-                            );
-                            addressList.add(ad);
+                        if(responseObj.getString("statusCode").equals("201")) {
+                            JSONArray dataArray = responseObj.getJSONArray("data");
+                            for (int i = 0; i < dataArray.length(); i++) {
+                                JSONObject addressObj = dataArray.getJSONObject(i);
+                                Address ad = new Address(
+                                        Integer.parseInt(addressObj.getString("addressId")),
+                                        addressObj.getString("street"),
+                                        addressObj.getString("city"),
+                                        addressObj.getString("state"),
+                                        addressObj.getString("postalCode"),
+                                        addressObj.getString("country")
+                                );
+                                addressList.add(ad);
+                            }
+                            addressAdapter.notifyDataSetChanged();
+                            initLayout();
                         }
-                        addressAdapter.notifyDataSetChanged();
-                        initLayout();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }

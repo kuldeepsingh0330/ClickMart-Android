@@ -2,8 +2,10 @@ package com.ransankul.clickmart.activities;
 
 import static com.ransankul.clickmart.util.Constants.PRODUCTS_IMAGE_URL;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.AuthFailureError;
@@ -42,6 +44,8 @@ public class WishlistActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
+    int pageNumber = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +60,31 @@ public class WishlistActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please wait...");
 
-        initProducts();
+        GridLayoutManager layoutManager = initProducts();
+        initLayout();
 
         binding.refreshWishlist.setOnRefreshListener(() -> {
             products.clear();
             productAdapter.notifyDataSetChanged();
             progressDialog.show();
+            pageNumber = 0;
             initProducts();
+        });
+
+        binding.productList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    pageNumber++;
+                    getAllWishlistProduct();
+                }
+            }
         });
     }
 
@@ -70,12 +92,13 @@ public class WishlistActivity extends AppCompatActivity {
 
         String tokenValue = Constants.getTokenValue(WishlistActivity.this);
 
-        String url = Constants.POST_LOAD_ALL_TO_WISHLIST_URL;
+        String url = Constants.POST_LOAD_ALL_TO_WISHLIST_URL+pageNumber;
         RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        Log.e("hhhhhhh1","bjh");
 
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
-
                     // Handle the response
                     try {
                         JSONObject obj = new JSONObject(response);
@@ -92,16 +115,11 @@ public class WishlistActivity extends AppCompatActivity {
                                         object.getInt("productId"));
                                 products.add(product);
 
-                                binding.tvEmpty.setVisibility(View.GONE);
 
                                 productAdapter.notifyDataSetChanged();
                             }
-                        }else{
-
-                            binding.tvEmpty.setVisibility(View.VISIBLE);
-                            binding.productList.setVisibility(View.GONE);
-
                         }
+                        initLayout();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -109,6 +127,7 @@ public class WishlistActivity extends AppCompatActivity {
                     binding.refreshWishlist.setRefreshing(false);
                 },
                 error -> {
+            initLayout();
                     progressDialog.dismiss();
                     binding.refreshWishlist.setRefreshing(false);
                 }) {
@@ -125,7 +144,7 @@ public class WishlistActivity extends AppCompatActivity {
 
     }
 
-    void initProducts() {
+    GridLayoutManager initProducts() {
         progressDialog.show();
         products = new ArrayList<>();
         productAdapter = new ProductAdapter(this, products);
@@ -136,12 +155,23 @@ public class WishlistActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         binding.productList.setLayoutManager(layoutManager);
         binding.productList.setAdapter(productAdapter);
+        return layoutManager;
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    private void initLayout(){
+        if(products.isEmpty()){
+            binding.tvEmpty.setVisibility(View.VISIBLE);
+            binding.productList.setVisibility(View.GONE);
+        }else{
+            binding.tvEmpty.setVisibility(View.GONE);
+            binding.productList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
