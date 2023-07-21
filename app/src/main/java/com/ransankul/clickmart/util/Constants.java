@@ -2,13 +2,15 @@ package com.ransankul.clickmart.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 public class Constants {
 
     public static final String SHARED_PREFS_NAME = "ransankulClickmart";
     public static final String KEY_STRING_VALUE = "JWTToken";
     public static final String RAZORPAY_KEY_ID = "rzp_test_E09iJEUuEwhiqc";
-    public static final String API_BASE_URL = "http://192.168.218.235:8080";
+    public static final String API_BASE_URL = "http://192.168.184.236:8080";
 
     public static final String REGISTER_USER_URL = API_BASE_URL + "/register";
     public static final String GET_CATEGORIES_URL = API_BASE_URL + "/categories/";
@@ -38,5 +40,14 @@ public class Constants {
     public static String getTokenValue(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(Constants.KEY_STRING_VALUE, "");
+    }
+
+    public static boolean isConnectedToInternet(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
     }
 }
