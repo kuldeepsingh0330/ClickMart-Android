@@ -123,16 +123,9 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        // Create the JSONObject
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("productId", id);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        String url = Constants.POST_ADD_TO_WISHLIST_URL;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+        String url = Constants.POST_ADD_TO_WISHLIST_URL+"/"+id;
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
                     // Handle the response
                     binding.addToWishlist.setVisibility(View.GONE);

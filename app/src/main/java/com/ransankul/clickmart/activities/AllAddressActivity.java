@@ -44,7 +44,6 @@ public class AllAddressActivity extends AppCompatActivity {
     AllAddressAdapter addressAdapter;
     ActivityAllAddressBinding binding;
 
-    int pageNumber = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,30 +100,14 @@ public class AllAddressActivity extends AppCompatActivity {
         binding.refreshAddressList.setOnRefreshListener(() -> {
             addressList.clear();
             addressAdapter.notifyDataSetChanged();
-            pageNumber = 0;
             loadAllAddress();
         });
 
-        binding.addressRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-
-                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
-                    pageNumber++;
-                    loadAllAddress();
-                }
-            }
-        });
     }
 
     private void loadAllAddress() {
         String tokenValue = Constants.getTokenValue(AllAddressActivity.this);
-        String url = Constants.GET_ALL_ADDRESS_URL+pageNumber;
+        String url = Constants.GET_ALL_ADDRESS_URL;
         StringRequest request = new StringRequest(Request.Method.POST,url,
                 response -> {
                     try {

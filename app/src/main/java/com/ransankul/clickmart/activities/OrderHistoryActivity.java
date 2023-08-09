@@ -27,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -93,11 +95,15 @@ public class OrderHistoryActivity extends AppCompatActivity {
                         JSONArray dataArray = responseObj.getJSONArray("data");
                         for(int i = 0;i<dataArray.length();i++){
                             JSONObject addressObj = dataArray.getJSONObject(i);
+                            String date = addressObj.getString("orderTime");
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            Date d = sdf.parse(date.substring(0,9)+" "+date.substring(11,15));
+
                             OrderHistory tr = new OrderHistory(
                                   addressObj.getString("imageName"),
                                     addressObj.getString("productId"),
                                     addressObj.getString("productName"),
-                                    new Date(Long.parseLong(addressObj.getString("orderTime"))),
+                                    d,
                                     addressObj.getString("paymentStatus"),
                                     addressObj.getString("transactionId")
                             );
@@ -106,7 +112,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
                         initLayout();
                         orderHistoryAdapter.notifyDataSetChanged();
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                    } catch (ParseException e) {
                     }
                     binding.refreshOrderlist.setRefreshing(false);
                 },error -> {
