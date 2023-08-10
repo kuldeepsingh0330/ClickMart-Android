@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/kuldeepsingh0330/ClickMart-SpringBoot/assets/95225751/a7597034-5cb0-4f82-af82-4065b73618c0" alt="Logo">
+</p>
+
 # ClickMart Android Application
 
 The ClickMart Android Application offers a convenient and user-friendly shopping experience, allowing users to explore, discover, and purchase a wide range of products right from their Android devices.
